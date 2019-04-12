@@ -1,17 +1,16 @@
 package com.tWilliam.MagicLabyrinth.Game;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
-import com.tWilliam.MagicLabyrinth.R;
 import com.tWilliam.MagicLabyrinth.TLibrary.TConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TDPCalculator;
+import com.tWilliam.MagicLabyrinth.TLibrary.TDirection;
 
-import java.util.Vector;
+import java.util.LinkedList;
 
 public class TGameBoard extends TDraw {
     private TLocation[][] locationMap;
@@ -19,9 +18,6 @@ public class TGameBoard extends TDraw {
     private TWall[][] horizontalWalls;
     private RelativeLayout gameBoard;
     private View[][] gameMap;
-
-    private int[] dx = {0, 0, -1, 1};
-    private int[] dy = {-1, 1, 0, 0};
 
     private int[][] located = {
             {0, 0, 1, 1, 0, 0},
@@ -39,11 +35,11 @@ public class TGameBoard extends TDraw {
             {0, 5}
     };
 
-    public TGameBoard(View view){
+    public TGameBoard(View view, int wallNumber){
         super(view);
 
         gameBoard = new RelativeLayout(view.getContext());
-        gameBoard.setBackgroundColor(Color.parseColor("#ffff00"));
+        gameBoard.setBackgroundColor(Color.parseColor("#eeeeee"));
 
         int dp_10 = (int)TDPCalculator.DPToPixel(10, view.getContext());
         gameBoard.setPadding(dp_10, dp_10, dp_10, dp_10);
@@ -120,6 +116,8 @@ public class TGameBoard extends TDraw {
                 gameBoard.addView(gameMap[y][x]);
             }
         }
+
+        initWalls(wallNumber);
     }
 
     public void enrollPlayers(TPlayer[] players){
@@ -131,8 +129,101 @@ public class TGameBoard extends TDraw {
         }
     }
 
+    public void initWalls(int wallNumber){
+        if ( wallNumber < 0 )
+            return;
+
+
+    }
+
+    public boolean checkPerfectMap(){
+        class pair {
+            int x;
+            int y;
+            public pair(int x, int y){
+                this.x = x;
+                this.y = y;
+            }
+        }
+        LinkedList<pair> q = new LinkedList<>();
+
+        int[][] checking_map = new int[locationMap.length][locationMap[0].length];
+        q.add(new pair(0, 0));
+        checking_map[0][0] = 1;
+
+        while ( !q.isEmpty() ){
+            pair nowPair = q.poll();
+            int nowX = nowPair.x;
+            int nowY = nowPair.y;
+
+            for ( TDirection.Dir4 dir: TDirection.Dir4.values() ){
+                int targetX = nowX + dir.DeltaX();
+                int targetY = nowY + dir.DeltaY();
+
+                if ( !canPlayerGo(nowX, nowY, dir) )
+                    continue;
+                if ( checking_map[targetY][targetX] == 1 )
+                    continue;
+
+                checking_map[targetY][targetX] = 1;
+                q.add(new pair(targetX, targetY));
+            }
+        }
+
+        for ( int[] row : checking_map ){
+            for ( int item : row ){
+                if ( item == 0 ){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public View getView(){
         return this.gameBoard;
+    }
+
+    public void setAllOnClickListner(View.OnClickListener listener){
+        for ( int y = 0; y < locationMap.length; y++ ){
+            for ( int x = 0; x < locationMap[y].length; x++ ){
+                if (locationMap[y][x] == null)
+                    continue;
+                locationMap[y][x].setOnClickListener(listener);
+            }
+        }
+    }
+
+    public boolean canPlayerGo(int orgX, int orgY, TDirection.Dir4 direction){
+        int wallX = orgX;
+        int wallY = orgY;
+
+        if ( orgX < 0 || orgY < 0 || orgX >= gameMap[0].length || orgY >= gameMap.length )
+            return false;
+
+        if ( direction == TDirection.Dir4.UP ){
+            wallY -= 1;
+        }
+        if ( direction == TDirection.Dir4.LEFT ){
+            wallX -= 1;
+        }
+
+        if ( direction == TDirection.Dir4.UP || direction == TDirection.Dir4.DOWN ) {
+            if ( wallY < 0 || wallY >= horizontalWalls.length )
+                return false;
+
+            return !horizontalWalls[wallY][wallX].isWall();
+        } else {
+            if ( wallX < 0 || wallX >= verticalWalls[0].length )
+                return false;
+
+            return !verticalWalls[wallY][wallX].isWall();
+        }
+    }
+
+    public void reactOnClick(View v){
+        v.setAlpha((float)0.3);
     }
 }

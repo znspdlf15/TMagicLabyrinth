@@ -27,7 +27,6 @@ public class TLocation extends TMap {
         super(view);
 
         this.imageView = view;
-        imageView.setBackgroundColor(Color.parseColor("#EEEEEE"));
         int dp_10 = (int)TDPCalculator.DPToPixel(10, view.getContext());
         imageView.setPadding(dp_10, dp_10, dp_10, dp_10);
 
@@ -52,5 +51,9 @@ public class TLocation extends TMap {
 
     public boolean isThereImage(){
         return imageId > 0;
+    }
+
+    public void setOnClickListener(View.OnClickListener listener){
+        this.imageView.setOnClickListener(listener);
     }
 }

@@ -1,48 +1,50 @@
 package com.tWilliam.MagicLabyrinth.TLibrary;
 
 public class TDirection {
-    private static final TDirection ourInstance = new TDirection();
+    public enum Dir4 {
+        DOWN(0),
+        UP(1),
+        RIGHT(2),
+        LEFT(3);
+        static final private int[] dx = {0, 0, 1, -1};
+        static final private int[] dy = {1, -1, 0, 0};
 
-    static public TDirection getInstance() {
-        return ourInstance;
-    }
+        private int idx;
 
-    static class Dir4 {
-        private static final Dir4 ourInstance = new Dir4();
-
-        static public Dir4 getInstance() {
-            return ourInstance;
+        Dir4(int idx){
+            this.idx = idx;
         }
 
-        static final public int[] dx = {0, 0, 1, -1};
-        static final public int[] dy = {1, -1, 0, 0};
-
-        enum dir{
-            down, up, right, left
+        public int DeltaX(){
+            return dx[this.idx];
+        }
+        public int DeltaY(){
+            return dy[this.idx];
         }
     }
-    static class Dir8 {
-        private static final Dir8 ourInstance = new Dir8();
+    public enum Dir8 {
+        DOWN(0),
+        UP(1),
+        RIGHT(2),
+        LEFT(3),
+        RIGHT_UP(4),
+        RIGHT_DOWN(5),
+        LEFT_UP(6),
+        LEFT_DOWN(7);
+        static final private int[] dx = {0, 0, 1, -1, 1, 1, -1, -1};
+        static final private int[] dy = {1, -1, 0, 0, -1, 1, -1, 1};
 
-        static public Dir8 getInstance() {
-            return ourInstance;
+        private int idx;
+
+        Dir8(int idx){
+            this.idx = idx;
         }
 
-        static final public int[] dx = {0, 0, 1, -1, 1, 1, -1, -1};
-        static final public int[] dy = {1, -1, 0, 0, -1, 1, -1, 1};
-
-        enum dir{
-            down, up, right, left, right_up, right_down, left_up, left_down
+        public int DeltaX(){
+            return dx[this.idx];
         }
-    }
-
-
-    private TDirection(){}
-
-    static public Dir4 get4dir() {
-        return Dir4.getInstance();
-    }
-    static public Dir8 get8dir() {
-        return Dir8.getInstance();
+        public int DeltaY(){
+            return dy[this.idx];
+        }
     }
 }

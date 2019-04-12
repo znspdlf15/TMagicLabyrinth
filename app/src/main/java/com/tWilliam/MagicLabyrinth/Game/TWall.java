@@ -42,13 +42,18 @@ public class TWall extends TMap {
 
     public void hideWall(){
         this.imageView.setBackgroundColor(Color.parseColor("#ffffff"));
-        isWall = false;
+        setWall(false);
     }
 
-    public void setWall(){
+    public void showWall(){
         this.imageView.setBackgroundColor(Color.parseColor("#ff0000"));
-        isWall = true;
+        setWall(true);
     }
+
+    public void setWall(boolean wall){
+        isWall = wall;
+    }
+
 
     @Override
     public View getView(){

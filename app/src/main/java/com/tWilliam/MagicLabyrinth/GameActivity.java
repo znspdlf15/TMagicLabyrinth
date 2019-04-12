@@ -14,7 +14,7 @@ import android.view.View.OnTouchListener;
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
 
-public class GameActivity extends StandardActivity{
+public class GameActivity extends StandardActivity implements View.OnClickListener{
     private ScaleGestureDetector mScaleGestureDetector;
     private float mScaleFactor = 1.0f;
     private ImageView mImageView;
@@ -32,7 +32,7 @@ public class GameActivity extends StandardActivity{
 
         background = findViewById(R.id.game_background);
 
-        mGameBoard = new TGameBoard(background);
+        mGameBoard = new TGameBoard(background, 25);
         View vGameBoard = mGameBoard.getView();
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -42,8 +42,14 @@ public class GameActivity extends StandardActivity{
         TPlayer[] players = {new TPlayer(R.mipmap.soccer_player), new TPlayer(R.mipmap.magician)};
 
         mGameBoard.enrollPlayers(players);
+        mGameBoard.setAllOnClickListner(this);
         background.addView(vGameBoard);
 //        mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+    }
+
+    @Override
+    public void onClick(View v) {
+        mGameBoard.reactOnClick(v);
     }
 
 //    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
