@@ -1,5 +1,6 @@
 package com.tWilliam.MagicLabyrinth;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -20,7 +21,7 @@ public class GameActivity extends StandardActivity{
     private int _xDelta;
     private int _yDelta;
 
-    private LinearLayout background;
+    private RelativeLayout background;
     private TGameBoard mGameBoard;
 
     @Override
@@ -29,8 +30,15 @@ public class GameActivity extends StandardActivity{
         setContentView(R.layout.activity_game);
 
         background = findViewById(R.id.game_background);
+
         mGameBoard = new TGameBoard(background);
-        setContentView(mGameBoard.getView());
+        View vGameBoard = mGameBoard.getView();
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+        vGameBoard.setLayoutParams(layoutParams);
+        
+        background.addView(vGameBoard);
 //        mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
     }
 
