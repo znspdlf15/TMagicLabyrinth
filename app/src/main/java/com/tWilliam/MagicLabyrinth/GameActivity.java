@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.view.View.OnTouchListener;
 
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
+import com.tWilliam.MagicLabyrinth.Player.TPlayer;
 
 public class GameActivity extends StandardActivity{
     private ScaleGestureDetector mScaleGestureDetector;
@@ -37,7 +38,10 @@ public class GameActivity extends StandardActivity{
                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         vGameBoard.setLayoutParams(layoutParams);
-        
+
+        TPlayer[] players = {new TPlayer(R.mipmap.soccer_player), new TPlayer(R.mipmap.magician)};
+
+        mGameBoard.enrollPlayers(players);
         background.addView(vGameBoard);
 //        mScaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
     }

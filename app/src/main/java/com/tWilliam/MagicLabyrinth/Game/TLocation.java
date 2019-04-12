@@ -33,10 +33,12 @@ public class TLocation extends TMap {
 
         imageView.requestLayout();
 
+        setImageId(id);
+    }
+
+    public void setImageId(int id){
         imageId = id;
-        if ( id != 0 ){
-            imageView.setImageResource(id);
-        }
+        imageView.setImageResource(id);
     }
 
     public void hideImage(){

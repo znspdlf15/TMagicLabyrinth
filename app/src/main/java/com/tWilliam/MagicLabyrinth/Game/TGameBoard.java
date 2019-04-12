@@ -6,9 +6,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.tWilliam.MagicLabyrinth.Player.TPlayer;
 import com.tWilliam.MagicLabyrinth.R;
 import com.tWilliam.MagicLabyrinth.TLibrary.TConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TDPCalculator;
+
+import java.util.Vector;
 
 public class TGameBoard extends TDraw {
     private TLocation[][] locationMap;
@@ -27,6 +30,13 @@ public class TGameBoard extends TDraw {
             {1, 1, 1, 1, 1, 1},
             {0, 1, 1, 1, 1, 0},
             {0, 0, 1, 1, 0, 0}
+    };
+
+    private int[][] playersCoordinate = {
+            {0, 0},
+            {5, 5},
+            {5, 0},
+            {0, 5}
     };
 
     public TGameBoard(View view){
@@ -112,8 +122,13 @@ public class TGameBoard extends TDraw {
         }
     }
 
-    public void enrollPlayers(){
+    public void enrollPlayers(TPlayer[] players){
+        for ( int i = 0; i < players.length; i++ ) {
+            int x = playersCoordinate[i][0];
+            int y = playersCoordinate[i][1];
 
+            locationMap[y][x].setImageId(players[i].getImageId());
+        }
     }
 
     @Override
