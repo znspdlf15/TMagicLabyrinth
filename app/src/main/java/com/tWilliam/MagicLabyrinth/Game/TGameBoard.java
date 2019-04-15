@@ -10,7 +10,10 @@ import com.tWilliam.MagicLabyrinth.TLibrary.TConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TDPCalculator;
 import com.tWilliam.MagicLabyrinth.TLibrary.TDirection;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 public class TGameBoard extends TDraw {
     private TLocation[][] locationMap;
@@ -118,6 +121,20 @@ public class TGameBoard extends TDraw {
         }
 
         initWalls(wallNumber);
+
+        // test
+        for ( TWall[] row : verticalWalls ){
+            for ( TWall item : row ){
+                if ( item.isWall() )
+                    item.showWall();
+            }
+        }
+        for ( TWall[] row : horizontalWalls ){
+            for ( TWall item : row ){
+                if ( item.isWall() )
+                    item.showWall();
+            }
+        }
     }
 
     public void enrollPlayers(TPlayer[] players){
@@ -133,8 +150,44 @@ public class TGameBoard extends TDraw {
         if ( wallNumber < 0 )
             return;
 
+        List<TWall> random_list = new ArrayList<>();
+
+        for ( TWall[] row: verticalWalls){
+            for ( TWall item: row){
+                random_list.add(item);
+            }
+        }
+        for ( TWall[] row: horizontalWalls){
+            for ( TWall item: row){
+                random_list.add(item);
+            }
+        }
+        Collections.shuffle(random_list);
+        setWalls(random_list, wallNumber, 0);
 
     }
+
+    public boolean setWalls(List<TWall> random_list, int count, int index) {
+        if ( count == 0 )
+            return true;
+
+        while ( index < random_list.size() ){
+            random_list.get(index).setWall(true);
+            if ( !checkPerfectMap() ){
+                random_list.get(index).setWall(false);
+                index++;
+                continue;
+            }
+            if ( setWalls(random_list, count-1, index + 1) ){
+                return true;
+            }
+            index++;
+            random_list.get(index).setWall(false);
+        }
+
+        return false;
+    }
+
 
     public boolean checkPerfectMap(){
         class pair {

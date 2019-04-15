@@ -10,7 +10,7 @@ import com.tWilliam.MagicLabyrinth.TLibrary.TDPCalculator;
 
 public class TWall extends TMap {
     private ImageView imageView;
-    private boolean isWall = false;
+    private boolean isWall;
 
     enum wallType{
         vertical,
@@ -19,15 +19,14 @@ public class TWall extends TMap {
     public TWall(View view) {
         super(view);
 
-        this.view = view;
-        this.view.setBackgroundColor(Color.parseColor("#ff0000"));
     }
 
     public TWall(ImageView view) {
         super(view);
 
         this.imageView = view;
-        this.imageView.setBackgroundColor(Color.parseColor("#ff0000"));
+        this.setWall(false);
+        this.hideWall();
     }
 
     public void setWallType (wallType type){
@@ -42,12 +41,11 @@ public class TWall extends TMap {
 
     public void hideWall(){
         this.imageView.setBackgroundColor(Color.parseColor("#ffffff"));
-        setWall(false);
     }
 
     public void showWall(){
-        this.imageView.setBackgroundColor(Color.parseColor("#ff0000"));
-        setWall(true);
+        if ( isWall )
+            this.imageView.setBackgroundColor(Color.parseColor("#ff0000"));
     }
 
     public void setWall(boolean wall){
