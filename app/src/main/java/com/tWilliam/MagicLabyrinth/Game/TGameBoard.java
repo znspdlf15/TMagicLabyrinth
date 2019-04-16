@@ -1,7 +1,10 @@
 package com.tWilliam.MagicLabyrinth.Game;
 
 import android.graphics.Color;
+import android.media.Image;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -21,6 +24,13 @@ public class TGameBoard extends TDraw {
     private TWall[][] horizontalWalls;
     private RelativeLayout gameBoard;
     private View[][] gameMap;
+
+    private int locationWidth = 50;
+    private int locationHeight = 50;
+    private int wallWidth = 3;
+    private int wallHeight = 50;
+
+    private ArrayList<TLocation> playerLocations = new ArrayList<>();
 
     private int[][] located = {
             {0, 0, 1, 1, 0, 0},
@@ -69,7 +79,7 @@ public class TGameBoard extends TDraw {
                     } else {
                         locationMap[y/2][x/2] = new TLocation((ImageView) gameMap[y][x], 0);
                     }
-                    int dp_50 = (int)TDPCalculator.DPToPixel(50, view.getContext());
+                    int dp_50 = (int)TDPCalculator.DPToPixel(locationWidth, view.getContext());
                     params.width = dp_50;
                     params.height = dp_50;
                     mapItem = locationMap[y/2][x/2];
@@ -80,8 +90,8 @@ public class TGameBoard extends TDraw {
                         gameMap[y][x] = new ImageView(gameBoard.getContext());
                         verticalWalls[y/2][x/2] = new TWall((ImageView)gameMap[y][x]);
                         verticalWalls[y/2][x/2].setWallType(TWall.wallType.vertical);
-                        params.width = (int)TDPCalculator.DPToPixel(3, view.getContext());
-                        params.height = (int)TDPCalculator.DPToPixel(50, view.getContext());
+                        params.width = (int)TDPCalculator.DPToPixel(wallWidth, view.getContext());
+                        params.height = (int)TDPCalculator.DPToPixel(wallHeight, view.getContext());
                         mapItem = verticalWalls[y/2][x/2];
                     } else if (y % 2 == 1 && x % 2 == 0) {
                         if ( y / 2 >= horizontalWalls.length  )
@@ -89,8 +99,8 @@ public class TGameBoard extends TDraw {
                         gameMap[y][x] = new ImageView(gameBoard.getContext());
                         horizontalWalls[y/2][x/2] = new TWall((ImageView)gameMap[y][x]);
                         horizontalWalls[y/2][x/2].setWallType(TWall.wallType.horizontal);
-                        params.width = (int)TDPCalculator.DPToPixel(50, view.getContext());
-                        params.height = (int)TDPCalculator.DPToPixel(3, view.getContext());
+                        params.width = (int)TDPCalculator.DPToPixel(wallHeight, view.getContext());
+                        params.height = (int)TDPCalculator.DPToPixel(wallWidth, view.getContext());
                         mapItem = horizontalWalls[y/2][x/2];
                     }
                 }
@@ -122,19 +132,7 @@ public class TGameBoard extends TDraw {
 
         initWalls(wallNumber);
 
-        // test
-        for ( TWall[] row : verticalWalls ){
-            for ( TWall item : row ){
-                if ( item.isWall() )
-                    item.showWall();
-            }
-        }
-        for ( TWall[] row : horizontalWalls ){
-            for ( TWall item : row ){
-                if ( item.isWall() )
-                    item.showWall();
-            }
-        }
+        showAllWalls();
     }
 
     public void enrollPlayers(TPlayer[] players){
@@ -142,7 +140,46 @@ public class TGameBoard extends TDraw {
             int x = playersCoordinate[i][0];
             int y = playersCoordinate[i][1];
 
-            locationMap[y][x].setImageId(players[i].getImageId());
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            int dp_50 = (int)TDPCalculator.DPToPixel(locationWidth, view.getContext());
+            params.width = dp_50;
+            params.height = dp_50;
+
+            ImageView iv = new ImageView(gameBoard.getContext());
+
+            int player_map_x;
+            int player_map_y;
+
+            if ( y > 0 ) {
+                player_map_y = gameMap.length - 2;
+            } else {
+                player_map_y = 1;
+            }
+
+            if ( x > 0 ) {
+                player_map_x = gameMap[0].length - 1;
+            } else {
+                player_map_x = 0;
+            }
+
+            if ( y > 0 ) {
+                params.addRule(RelativeLayout.BELOW, gameMap[player_map_y][player_map_x].getId());
+                params.addRule(RelativeLayout.ALIGN_LEFT, gameMap[player_map_y][player_map_x].getId());
+            } else {
+                params.addRule(RelativeLayout.ABOVE, gameMap[1][player_map_x].getId());
+                params.addRule(RelativeLayout.ALIGN_LEFT, gameMap[1][player_map_x].getId());
+            }
+
+            Log.v(this.getClass().getSimpleName(), locationMap[y][x].getView().getX() + ", " + locationMap[y][x].getView().getY() );
+            iv.setImageResource(players[i].getImageId());
+            iv.setLayoutParams(params);
+
+            TLocation player = new TLocation(iv, players[i].getImageId());
+            playerLocations.add(player);
+
+            gameBoard.addView(iv);
         }
     }
 
@@ -186,6 +223,21 @@ public class TGameBoard extends TDraw {
         }
 
         return false;
+    }
+
+    public void showAllWalls(){
+        for ( TWall[] row : verticalWalls ){
+            for ( TWall item : row ){
+                if ( item.isWall() )
+                    item.showWall();
+            }
+        }
+        for ( TWall[] row : horizontalWalls ){
+            for ( TWall item : row ){
+                if ( item.isWall() )
+                    item.showWall();
+            }
+        }
     }
 
 
@@ -247,6 +299,9 @@ public class TGameBoard extends TDraw {
                 locationMap[y][x].setOnClickListener(listener);
             }
         }
+        for ( TLocation player: playerLocations ){
+            player.getView().setOnClickListener(listener);
+        }
     }
 
     public boolean canPlayerGo(int orgX, int orgY, TDirection.Dir4 direction){
@@ -277,6 +332,10 @@ public class TGameBoard extends TDraw {
     }
 
     public void reactOnClick(View v){
-        v.setAlpha((float)0.3);
+        for ( TLocation player: playerLocations ){
+            if ( v == player.getView() ) {
+                player.getView().setAlpha((float)0.3);
+            }
+        }
     }
 }
