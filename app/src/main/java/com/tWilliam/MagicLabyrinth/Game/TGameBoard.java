@@ -31,6 +31,9 @@ public class TGameBoard extends TDraw {
     private int wallHeight = 50;
 
     private ArrayList<TLocation> playerLocations = new ArrayList<>();
+    private TPlayer[] players;
+    private int turnIdx;
+
 
     private int[][] located = {
             {0, 0, 1, 1, 0, 0},
@@ -136,6 +139,8 @@ public class TGameBoard extends TDraw {
     }
 
     public void enrollPlayers(TPlayer[] players){
+        this.players = players;
+
         for ( int i = 0; i < players.length; i++ ) {
             int x = playersCoordinate[i][0];
             int y = playersCoordinate[i][1];
@@ -172,11 +177,13 @@ public class TGameBoard extends TDraw {
                 params.addRule(RelativeLayout.ALIGN_LEFT, gameMap[1][player_map_x].getId());
             }
 
-            Log.v(this.getClass().getSimpleName(), locationMap[y][x].getView().getX() + ", " + locationMap[y][x].getView().getY() );
             iv.setImageResource(players[i].getImageId());
             iv.setLayoutParams(params);
 
             TLocation player = new TLocation(iv, players[i].getImageId());
+            players[i].setLocation(player);
+            players[i].setX(x);
+            players[i].setY(y);
             playerLocations.add(player);
 
             gameBoard.addView(iv);
@@ -332,10 +339,55 @@ public class TGameBoard extends TDraw {
     }
 
     public void reactOnClick(View v){
+        // if click object is player.
         for ( TLocation player: playerLocations ){
             if ( v == player.getView() ) {
-                player.getView().setAlpha((float)0.3);
+
+
+                return;
             }
         }
+
+
+        // if click object is near players.
+        int clickedX = -1;
+        int clickedY = -1;
+
+        for ( int y = 0; y < gameMap.length; y++ ){
+            for ( int x = 0; x < gameMap[0].length; x++ ){
+                if ( gameMap[y][x] == v ){
+                    clickedX = x;
+                    clickedY = y;
+                }
+            }
+        }
+
+        // in case of failing find view.
+        if ( clickedX < 0 )
+            return;
+
+        int playerX = players[turnIdx].getX();
+        int playerY = players[turnIdx].getY();
+
+        for ( TDirection.Dir4 dir : TDirection.Dir4.values() ){
+            int targetX = playerX + dir.DeltaX();
+            int targetY = playerY + dir.DeltaY();
+
+            if ( !(targetX == clickedX && targetY == clickedY) )
+                continue;
+
+            if ( canPlayerGo(playerX, playerY, dir) ){
+                movePlayer(players[turnIdx], targetX, targetY);
+            }
+        }
+    }
+
+    public boolean movePlayer(TPlayer movingPlayer, int targetX, int targetY){
+//        if ( targetX < 0 || targetX >= )
+        movingPlayer.setX(targetX);
+        movingPlayer.setY(targetY);
+        movingPlayer.getLocation().getView().setX(gameMap[targetY][targetX].getX());
+        movingPlayer.getLocation().getView().setY(gameMap[targetY][targetX].getY());
+        return true;
     }
 }
