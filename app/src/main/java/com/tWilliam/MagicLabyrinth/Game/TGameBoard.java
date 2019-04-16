@@ -25,7 +25,7 @@ public class TGameBoard extends RelativeLayout {
     private int wallWidth = 3;
     private int wallHeight = 50;
 
-    private ArrayList<TLocation> playerLocations = new ArrayList<>();
+    private ArrayList<TPlayer> playerLocations = new ArrayList<>();
     private TPlayer[] players;
     private int turnIdx;
 
@@ -144,36 +144,21 @@ public class TGameBoard extends RelativeLayout {
             params.width = dp_50;
             params.height = dp_50;
 
-            int player_map_x;
-            int player_map_y;
-
-            if ( y > 0 ) {
-                player_map_y = horizontalWalls.length - 1;
+            if ( y == 0 ) {
+                params.addRule(RelativeLayout.ABOVE, horizontalWalls[0][x].getId());
+                params.addRule(RelativeLayout.ALIGN_LEFT, horizontalWalls[0][x].getId());
             } else {
-                player_map_y = 0;
+                params.addRule(RelativeLayout.BELOW, horizontalWalls[y-1][x].getId());
+                params.addRule(RelativeLayout.ALIGN_LEFT, horizontalWalls[y-1][x].getId());
             }
 
-            if ( x > 0 ) {
-                player_map_x = horizontalWalls[0].length - 1;
-            } else {
-                player_map_x = 0;
-            }
-
-            if ( y > 0 ) {
-                params.addRule(RelativeLayout.BELOW, horizontalWalls[player_map_y][player_map_x].getId());
-                params.addRule(RelativeLayout.ALIGN_LEFT, horizontalWalls[player_map_y][player_map_x].getId());
-            } else {
-                params.addRule(RelativeLayout.ABOVE, horizontalWalls[player_map_y][player_map_x].getId());
-                params.addRule(RelativeLayout.ALIGN_LEFT, horizontalWalls[player_map_y][player_map_x].getId());
-            }
-
-            TLocation player = new TLocation(this.getContext(), players[i].getImageId());
+            TLocationPlayer player = new TLocationPlayer(this.getContext(), players[i].getImageId());
             player.setLayoutParams(params);
             players[i].setLocation(player);
             players[i].setX(x);
             players[i].setY(y);
             player.setLayoutParams(params);
-            playerLocations.add(player);
+            playerLocations.add(players[i]);
 
             this.addView(player);
         }
@@ -289,8 +274,8 @@ public class TGameBoard extends RelativeLayout {
                 locationMap[y][x].setOnClickListener(listener);
             }
         }
-        for ( TLocation player: playerLocations ){
-            player.setOnClickListener(listener);
+        for ( TPlayer player: playerLocations ){
+            player.getLocation().setOnClickListener(listener);
         }
     }
 
@@ -322,16 +307,6 @@ public class TGameBoard extends RelativeLayout {
     }
 
     public void reactOnClick(View v){
-        // if click object is player.
-        for ( TLocation player: playerLocations ){
-            if ( v == player ) {
-
-
-                return;
-            }
-        }
-
-
         // if click object is near players.
         int clickedX = -1;
         int clickedY = -1;
@@ -342,6 +317,14 @@ public class TGameBoard extends RelativeLayout {
                     clickedX = x;
                     clickedY = y;
                 }
+            }
+        }
+
+        // if click object is player.
+        for ( TPlayer player: playerLocations ){
+            if ( v == player.getLocation() ) {
+                clickedX = player.getX();
+                clickedY = player.getY();
             }
         }
 
@@ -362,6 +345,9 @@ public class TGameBoard extends RelativeLayout {
     }
 
     public void movePlayer(TPlayer movingPlayer, int targetX, int targetY){
-
+        movingPlayer.setX(targetX);
+        movingPlayer.setY(targetY);
+        movingPlayer.getLocation().setX(locationMap[targetY][targetX].getX());
+        movingPlayer.getLocation().setY(locationMap[targetY][targetX].getY());
     }
 }
