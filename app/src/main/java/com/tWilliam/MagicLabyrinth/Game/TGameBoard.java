@@ -1,8 +1,8 @@
 package com.tWilliam.MagicLabyrinth.Game;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
@@ -28,6 +28,8 @@ public class TGameBoard extends RelativeLayout {
     private ArrayList<TPlayer> playerLocations = new ArrayList<>();
     private TPlayer[] players;
     private int turnIdx;
+
+    private ArrayList<TLocation> resetList = new ArrayList<>();
 
     public TGameBoard(Context context, int wallNumber){
         super(context);
@@ -115,8 +117,6 @@ public class TGameBoard extends RelativeLayout {
         }
 
         initWalls(wallNumber);
-
-        showAllWalls();
     }
 
     public void enrollPlayers(TPlayer[] players){
@@ -307,10 +307,10 @@ public class TGameBoard extends RelativeLayout {
     }
 
     public void reactOnClick(View v){
-        // if click object is near players.
         int clickedX = -1;
         int clickedY = -1;
 
+        // if click object is near players.
         for ( int y = 0; y < locationMap.length; y++ ){
             for ( int x = 0; x < locationMap[0].length; x++ ){
                 if ( locationMap[y][x] == v ){
@@ -340,8 +340,21 @@ public class TGameBoard extends RelativeLayout {
 
             if ( canPlayerGo(playerX, playerY, dir) ){
                 movePlayer(players[turnIdx], targetX, targetY);
+                // for debug
+                this.unhighlightLocations();
+                this.highlightNearPlayer(players[turnIdx], true);
+            } else {
+                
             }
         }
+    }
+
+    public void unhighlightLocations(){
+        Log.d(this.getClass().getSimpleName(), "reset list !!!");
+        for ( TLocation item: resetList ){
+            item.setHighlight(TLocation.highlightType.normal);
+        }
+        resetList.clear();
     }
 
     public void movePlayer(TPlayer movingPlayer, int targetX, int targetY){
@@ -349,5 +362,22 @@ public class TGameBoard extends RelativeLayout {
         movingPlayer.setY(targetY);
         movingPlayer.getLocation().setX(locationMap[targetY][targetX].getX());
         movingPlayer.getLocation().setY(locationMap[targetY][targetX].getY());
+    }
+
+    public void highlightNearPlayer(TPlayer player, boolean highlightOn){
+        int playerX = player.getX();
+        int playerY = player.getY();
+
+        for ( TDirection.Dir4 dir : TDirection.Dir4.values() ){
+            int targetX = playerX + dir.DeltaX();
+            int targetY = playerY + dir.DeltaY();
+            if ( targetX < 0 || targetX >= locationMap[0].length || targetY < 0 || targetY >= locationMap.length )
+                continue;
+
+            if ( highlightOn ) {
+                locationMap[targetY][targetX].setHighlight(TLocation.highlightType.movable);
+                resetList.add(locationMap[targetY][targetX]);
+            }
+        }
     }
 }
