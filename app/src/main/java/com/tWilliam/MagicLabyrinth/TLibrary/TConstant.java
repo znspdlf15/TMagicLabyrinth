@@ -3,7 +3,7 @@ package com.tWilliam.MagicLabyrinth.TLibrary;
 import com.tWilliam.MagicLabyrinth.R;
 
 public class TConstant {
-    static public int[] imageFileNames = {
+    static final public int[] IMAGE_FILE_NAME = {
             R.mipmap.bookmark_star,
             R.mipmap.cannabis_leaf,
             R.mipmap.cloud_dark_shape,
@@ -29,4 +29,24 @@ public class TConstant {
             R.mipmap.butterfly_wings_couple,
             R.mipmap.waning_moon
     };
+    static final public int[] IMAGE_FOR_PLAYER_FILE_NAME = {
+            R.mipmap.soccer_player,
+            R.mipmap.magician
+    };
+
+    /*
+    1, 2, 3, 4: player number.
+    9 : item
+     */
+    public static final int[][] MAP_PLACE = {
+            {1, 0, 9, 9, 0, 3},
+            {0, 9, 9, 9, 9, 0},
+            {9, 9, 9, 9, 9, 9},
+            {9, 9, 9, 9, 9, 9},
+            {0, 9, 9, 9, 9, 0},
+            {4, 0, 9, 9, 0, 2}
+    };
+
+//    static final public int
+
 }

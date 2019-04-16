@@ -34,23 +34,6 @@ public class TGameBoard extends TDraw {
     private TPlayer[] players;
     private int turnIdx;
 
-
-    private int[][] located = {
-            {0, 0, 1, 1, 0, 0},
-            {0, 1, 1, 1, 1, 0},
-            {1, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1},
-            {0, 1, 1, 1, 1, 0},
-            {0, 0, 1, 1, 0, 0}
-    };
-
-    private int[][] playersCoordinate = {
-            {0, 0},
-            {5, 5},
-            {5, 0},
-            {0, 5}
-    };
-
     public TGameBoard(View view, int wallNumber){
         super(view);
 
@@ -77,8 +60,8 @@ public class TGameBoard extends TDraw {
                 TMap mapItem = null;
                 if ( y % 2 == 0 && x % 2 == 0 ){
                     gameMap[y][x] = new ImageView(gameBoard.getContext());
-                    if ( imageIdx < TConstant.imageFileNames.length && located[y/2][x/2] == 1) {
-                        locationMap[y/2][x/2] = new TLocation((ImageView) gameMap[y][x], TConstant.imageFileNames[imageIdx++]);
+                    if ( imageIdx < TConstant.IMAGE_FILE_NAME.length && TConstant.MAP_PLACE[y/2][x/2] == 9) {
+                        locationMap[y/2][x/2] = new TLocation((ImageView) gameMap[y][x], TConstant.IMAGE_FILE_NAME[imageIdx++]);
                     } else {
                         locationMap[y/2][x/2] = new TLocation((ImageView) gameMap[y][x], 0);
                     }
@@ -142,8 +125,19 @@ public class TGameBoard extends TDraw {
         this.players = players;
 
         for ( int i = 0; i < players.length; i++ ) {
-            int x = playersCoordinate[i][0];
-            int y = playersCoordinate[i][1];
+            int x = -1;
+            int y = -1;
+
+            for ( int yy = 0; yy < TConstant.MAP_PLACE.length; yy++ ){
+                for ( int xx = 0; xx < TConstant.MAP_PLACE[0].length; xx++ ){
+                    if ( TConstant.MAP_PLACE[yy][xx] == i+1 ){
+                        x = xx;
+                        y = yy;
+                    }
+                }
+            }
+            if ( x == -1 )
+                continue;
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
