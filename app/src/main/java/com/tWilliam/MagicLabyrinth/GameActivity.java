@@ -32,18 +32,17 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
 
         background = findViewById(R.id.game_background);
 
-        mGameBoard = new TGameBoard(background, 25);
-        View vGameBoard = mGameBoard.getView();
+        mGameBoard = new TGameBoard(background.getContext(), 25);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        vGameBoard.setLayoutParams(layoutParams);
+        mGameBoard.setLayoutParams(layoutParams);
 
         TPlayer[] players = {new TPlayer(R.mipmap.soccer_player), new TPlayer(R.mipmap.magician)};
 
         mGameBoard.enrollPlayers(players);
         mGameBoard.setAllOnClickListner(this);
-        background.addView(vGameBoard);
+        background.addView(mGameBoard);
     }
 
     @Override

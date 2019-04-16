@@ -1,10 +1,7 @@
 package com.tWilliam.MagicLabyrinth.Game;
 
-import android.graphics.Color;
-import android.media.Image;
-import android.util.Log;
+import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -18,12 +15,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TGameBoard extends TDraw {
+public class TGameBoard extends RelativeLayout {
     private TLocation[][] locationMap;
     private TWall[][] verticalWalls;
     private TWall[][] horizontalWalls;
-    private RelativeLayout gameBoard;
-    private View[][] gameMap;
 
     private int locationWidth = 50;
     private int locationHeight = 50;
@@ -34,85 +29,88 @@ public class TGameBoard extends TDraw {
     private TPlayer[] players;
     private int turnIdx;
 
-    public TGameBoard(View view, int wallNumber){
-        super(view);
+    public TGameBoard(Context context, int wallNumber){
+        super(context);
 
-        gameBoard = new RelativeLayout(view.getContext());
-        gameBoard.setBackgroundColor(Color.parseColor("#eeeeee"));
-
-        int dp_10 = (int)TDPCalculator.DPToPixel(10, view.getContext());
-        gameBoard.setPadding(dp_10, dp_10, dp_10, dp_10);
+        int dp_10 = (int)TDPCalculator.DPToPixel(10, this.getContext());
+        this.setPadding(dp_10, dp_10, dp_10, dp_10);
 
         locationMap = new TLocation[6][6];
         verticalWalls = new TWall[6][5];
         horizontalWalls = new TWall[5][6];
 
-        gameMap = new View[locationMap.length + horizontalWalls.length][locationMap[0].length + verticalWalls[0].length];
-
         int imageIdx = 0;
-        for ( int y = 0; y < locationMap.length + horizontalWalls.length; y++ ){
-            for ( int x = 0; x < locationMap[0].length + verticalWalls[0].length; x++ ){
-                if ( y % 2 == 1 && x % 2 == 1 )
-                    continue;
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+        for ( int y = 0; y < locationMap.length; y++ ){
+            for ( int x = 0; x < locationMap[0].length; x++ ){
+                // location
+                RelativeLayout.LayoutParams locationParams = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-                TMap mapItem = null;
-                if ( y % 2 == 0 && x % 2 == 0 ){
-                    gameMap[y][x] = new ImageView(gameBoard.getContext());
-                    if ( imageIdx < TConstant.IMAGE_FILE_NAME.length && TConstant.MAP_PLACE[y/2][x/2] == 9) {
-                        locationMap[y/2][x/2] = new TLocation((ImageView) gameMap[y][x], TConstant.IMAGE_FILE_NAME[imageIdx++]);
-                    } else {
-                        locationMap[y/2][x/2] = new TLocation((ImageView) gameMap[y][x], 0);
+                if ( imageIdx < TConstant.IMAGE_FILE_NAME.length && TConstant.MAP_PLACE[y][x] == 9)
+                    locationMap[y][x] = new TLocation(this.getContext(), TConstant.IMAGE_FILE_NAME[imageIdx++]);
+                else
+                    locationMap[y][x] = new TLocation(this.getContext(), 0);
+
+                if ( y == 0 ){
+                    if ( x != 0 ){
+                        locationParams.addRule(RelativeLayout.RIGHT_OF, verticalWalls[y][x-1].getId());
+                        locationParams.addRule(RelativeLayout.ALIGN_TOP, verticalWalls[y][x-1].getId());
                     }
-                    int dp_50 = (int)TDPCalculator.DPToPixel(locationWidth, view.getContext());
-                    params.width = dp_50;
-                    params.height = dp_50;
-                    mapItem = locationMap[y/2][x/2];
                 } else {
-                    if ( y % 2 == 0 && x % 2 == 1 ){
-                        if ( x / 2 >= verticalWalls[0].length )
-                            continue;
-                        gameMap[y][x] = new ImageView(gameBoard.getContext());
-                        verticalWalls[y/2][x/2] = new TWall((ImageView)gameMap[y][x]);
-                        verticalWalls[y/2][x/2].setWallType(TWall.wallType.vertical);
-                        params.width = (int)TDPCalculator.DPToPixel(wallWidth, view.getContext());
-                        params.height = (int)TDPCalculator.DPToPixel(wallHeight, view.getContext());
-                        mapItem = verticalWalls[y/2][x/2];
-                    } else if (y % 2 == 1 && x % 2 == 0) {
-                        if ( y / 2 >= horizontalWalls.length  )
-                            continue;
-                        gameMap[y][x] = new ImageView(gameBoard.getContext());
-                        horizontalWalls[y/2][x/2] = new TWall((ImageView)gameMap[y][x]);
-                        horizontalWalls[y/2][x/2].setWallType(TWall.wallType.horizontal);
-                        params.width = (int)TDPCalculator.DPToPixel(wallHeight, view.getContext());
-                        params.height = (int)TDPCalculator.DPToPixel(wallWidth, view.getContext());
-                        mapItem = horizontalWalls[y/2][x/2];
-                    }
+                    locationParams.addRule(RelativeLayout.BELOW, horizontalWalls[y-1][x].getId());
+                    locationParams.addRule(RelativeLayout.ALIGN_LEFT, horizontalWalls[y-1][x].getId());
                 }
 
-                if ( mapItem == null )
-                    continue;
+                int dp_location_size = (int)TDPCalculator.DPToPixel(locationWidth, this.getContext());
 
-                gameMap[y][x].setId(10000 + y * 100 + x);
-                if ( y != 0 ) {
-                    if ( gameMap[y-1][x] == null ){
-                        params.addRule(RelativeLayout.RIGHT_OF, gameMap[y][x-1].getId());
-                        params.addRule(RelativeLayout.ALIGN_TOP, gameMap[y][x-1].getId());
-                    } else {
-                        params.addRule(RelativeLayout.BELOW, gameMap[y-1][x].getId());
-                        params.addRule(RelativeLayout.ALIGN_LEFT, gameMap[y-1][x].getId());
-                    }
-                } else if ( x != 0 ){
-                    params.addRule(RelativeLayout.RIGHT_OF, gameMap[y][x-1].getId());
-                    params.addRule(RelativeLayout.ALIGN_TOP, gameMap[y][x-1].getId());
+                locationParams.width = dp_location_size;
+                locationParams.height = dp_location_size;
+
+                locationMap[y][x].setId(10000 + 100 * y + x);
+                locationMap[y][x].setLayoutParams(locationParams);
+                this.addView(locationMap[y][x]);
+
+                // vertical wall
+                if ( x < verticalWalls[0].length && y < verticalWalls.length ) {
+                    RelativeLayout.LayoutParams verticalParams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                    verticalWalls[y][x] = new TWall(this.getContext());
+
+                    verticalParams.addRule(RelativeLayout.RIGHT_OF, locationMap[y][x].getId());
+                    verticalParams.addRule(RelativeLayout.ALIGN_TOP, locationMap[y][x].getId());
+
+                    int dp_vertical_width = (int) TDPCalculator.DPToPixel(wallWidth, this.getContext());
+                    int dp_vertical_height = (int) TDPCalculator.DPToPixel(wallHeight, this.getContext());
+
+                    verticalParams.width = dp_vertical_width;
+                    verticalParams.height = dp_vertical_height;
+
+                    verticalWalls[y][x].setId(20000 + 100 * y + x);
+                    verticalWalls[y][x].setLayoutParams(verticalParams);
+                    this.addView(verticalWalls[y][x]);
                 }
-                gameMap[y][x].setLayoutParams(params);
 
-                if ( mapItem.getView() == null )
-                    continue;
+                // horizontal wall
+                if ( x < horizontalWalls[0].length && y < horizontalWalls.length ) {
+                    RelativeLayout.LayoutParams horizontalParams = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-                gameBoard.addView(gameMap[y][x]);
+                    horizontalWalls[y][x] = new TWall(this.getContext());
+
+                    horizontalParams.addRule(RelativeLayout.BELOW, locationMap[y][x].getId());
+                    horizontalParams.addRule(RelativeLayout.ALIGN_LEFT, locationMap[y][x].getId());
+
+                    int dp_horizontal_height = (int) TDPCalculator.DPToPixel(wallWidth, this.getContext());
+                    int dp_horizontal_width = (int) TDPCalculator.DPToPixel(wallHeight, this.getContext());
+
+                    horizontalParams.width = dp_horizontal_width;
+                    horizontalParams.height = dp_horizontal_height;
+
+                    horizontalWalls[y][x].setId(30000 + 100 * y + x);
+                    horizontalWalls[y][x].setLayoutParams(horizontalParams);
+                    this.addView(horizontalWalls[y][x]);
+                }
             }
         }
 
@@ -142,45 +140,42 @@ public class TGameBoard extends TDraw {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-            int dp_50 = (int)TDPCalculator.DPToPixel(locationWidth, view.getContext());
+            int dp_50 = (int)TDPCalculator.DPToPixel(locationWidth, this.getContext());
             params.width = dp_50;
             params.height = dp_50;
-
-            ImageView iv = new ImageView(gameBoard.getContext());
 
             int player_map_x;
             int player_map_y;
 
             if ( y > 0 ) {
-                player_map_y = gameMap.length - 2;
+                player_map_y = horizontalWalls.length - 1;
             } else {
-                player_map_y = 1;
+                player_map_y = 0;
             }
 
             if ( x > 0 ) {
-                player_map_x = gameMap[0].length - 1;
+                player_map_x = horizontalWalls[0].length - 1;
             } else {
                 player_map_x = 0;
             }
 
             if ( y > 0 ) {
-                params.addRule(RelativeLayout.BELOW, gameMap[player_map_y][player_map_x].getId());
-                params.addRule(RelativeLayout.ALIGN_LEFT, gameMap[player_map_y][player_map_x].getId());
+                params.addRule(RelativeLayout.BELOW, horizontalWalls[player_map_y][player_map_x].getId());
+                params.addRule(RelativeLayout.ALIGN_LEFT, horizontalWalls[player_map_y][player_map_x].getId());
             } else {
-                params.addRule(RelativeLayout.ABOVE, gameMap[1][player_map_x].getId());
-                params.addRule(RelativeLayout.ALIGN_LEFT, gameMap[1][player_map_x].getId());
+                params.addRule(RelativeLayout.ABOVE, horizontalWalls[player_map_y][player_map_x].getId());
+                params.addRule(RelativeLayout.ALIGN_LEFT, horizontalWalls[player_map_y][player_map_x].getId());
             }
 
-            iv.setImageResource(players[i].getImageId());
-            iv.setLayoutParams(params);
-
-            TLocation player = new TLocation(iv, players[i].getImageId());
+            TLocation player = new TLocation(this.getContext(), players[i].getImageId());
+            player.setLayoutParams(params);
             players[i].setLocation(player);
             players[i].setX(x);
             players[i].setY(y);
+            player.setLayoutParams(params);
             playerLocations.add(player);
 
-            gameBoard.addView(iv);
+            this.addView(player);
         }
     }
 
@@ -241,7 +236,6 @@ public class TGameBoard extends TDraw {
         }
     }
 
-
     public boolean checkPerfectMap(){
         class pair {
             int x;
@@ -287,11 +281,6 @@ public class TGameBoard extends TDraw {
         return true;
     }
 
-    @Override
-    public View getView(){
-        return this.gameBoard;
-    }
-
     public void setAllOnClickListner(View.OnClickListener listener){
         for ( int y = 0; y < locationMap.length; y++ ){
             for ( int x = 0; x < locationMap[y].length; x++ ){
@@ -301,7 +290,7 @@ public class TGameBoard extends TDraw {
             }
         }
         for ( TLocation player: playerLocations ){
-            player.getView().setOnClickListener(listener);
+            player.setOnClickListener(listener);
         }
     }
 
@@ -309,7 +298,7 @@ public class TGameBoard extends TDraw {
         int wallX = orgX;
         int wallY = orgY;
 
-        if ( orgX < 0 || orgY < 0 || orgX >= gameMap[0].length || orgY >= gameMap.length )
+        if ( orgX < 0 || orgY < 0 || orgX >= locationMap[0].length || orgY >= locationMap.length )
             return false;
 
         if ( direction == TDirection.Dir4.UP ){
@@ -335,7 +324,7 @@ public class TGameBoard extends TDraw {
     public void reactOnClick(View v){
         // if click object is player.
         for ( TLocation player: playerLocations ){
-            if ( v == player.getView() ) {
+            if ( v == player ) {
 
 
                 return;
@@ -347,18 +336,14 @@ public class TGameBoard extends TDraw {
         int clickedX = -1;
         int clickedY = -1;
 
-        for ( int y = 0; y < gameMap.length; y++ ){
-            for ( int x = 0; x < gameMap[0].length; x++ ){
-                if ( gameMap[y][x] == v ){
+        for ( int y = 0; y < locationMap.length; y++ ){
+            for ( int x = 0; x < locationMap[0].length; x++ ){
+                if ( locationMap[y][x] == v ){
                     clickedX = x;
                     clickedY = y;
                 }
             }
         }
-
-        // in case of failing find view.
-        if ( clickedX < 0 )
-            return;
 
         int playerX = players[turnIdx].getX();
         int playerY = players[turnIdx].getY();
@@ -376,12 +361,7 @@ public class TGameBoard extends TDraw {
         }
     }
 
-    public boolean movePlayer(TPlayer movingPlayer, int targetX, int targetY){
-//        if ( targetX < 0 || targetX >= )
-        movingPlayer.setX(targetX);
-        movingPlayer.setY(targetY);
-        movingPlayer.getLocation().getView().setX(gameMap[targetY][targetX].getX());
-        movingPlayer.getLocation().getView().setY(gameMap[targetY][targetX].getY());
-        return true;
+    public void movePlayer(TPlayer movingPlayer, int targetX, int targetY){
+
     }
 }
