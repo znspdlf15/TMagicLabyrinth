@@ -344,7 +344,12 @@ public class TGameBoard extends RelativeLayout {
                 this.unhighlightLocations();
                 this.highlightNearPlayer(players[turnIdx], true);
             } else {
-                
+                this.moveFailPlayer(players[turnIdx], targetX, targetY);
+                if ( dir == TDirection.Dir4.DOWN || dir == TDirection.Dir4.UP ){
+                    this.horizontalWalls[(playerY + targetY)/2][(playerX + targetX)/2].blink();
+                } else {
+                    this.verticalWalls[(playerY + targetY)/2][(playerX + targetX)/2].blink();
+                }
             }
         }
     }
@@ -362,6 +367,10 @@ public class TGameBoard extends RelativeLayout {
         movingPlayer.setY(targetY);
         movingPlayer.getLocation().setX(locationMap[targetY][targetX].getX());
         movingPlayer.getLocation().setY(locationMap[targetY][targetX].getY());
+    }
+
+    public void moveFailPlayer(TPlayer movingPlayer, int targetX, int targetY){
+
     }
 
     public void highlightNearPlayer(TPlayer player, boolean highlightOn){
