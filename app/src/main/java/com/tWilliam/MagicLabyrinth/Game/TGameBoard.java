@@ -20,10 +20,10 @@ public class TGameBoard extends RelativeLayout {
     private TWall[][] verticalWalls;
     private TWall[][] horizontalWalls;
 
-    private int locationWidth = 50;
-    private int locationHeight = 50;
+    private int locationWidth = 65;
+    private int locationHeight = 65;
     private int wallWidth = 3;
-    private int wallHeight = 50;
+    private int wallHeight = 65;
 
     private ArrayList<TPlayer> playerLocations = new ArrayList<>();
     private TPlayer[] players;
@@ -355,7 +355,6 @@ public class TGameBoard extends RelativeLayout {
     }
 
     public void unhighlightLocations(){
-        Log.d(this.getClass().getSimpleName(), "reset list !!!");
         for ( TLocation item: resetList ){
             item.setHighlight(TLocation.highlightType.normal);
         }
@@ -371,6 +370,14 @@ public class TGameBoard extends RelativeLayout {
 
     public void moveFailPlayer(TPlayer movingPlayer, int targetX, int targetY){
 
+        int orgX = movingPlayer.getOrgX();
+        int orgY = movingPlayer.getOrgY();
+        movingPlayer.setX(orgX);
+        movingPlayer.setY(orgY);
+        movingPlayer.getLocation().setX(locationMap[orgY][orgX].getX());
+        movingPlayer.getLocation().setY(locationMap[orgY][orgX].getY());
+
+        this.unhighlightLocations();
     }
 
     public void highlightNearPlayer(TPlayer player, boolean highlightOn){

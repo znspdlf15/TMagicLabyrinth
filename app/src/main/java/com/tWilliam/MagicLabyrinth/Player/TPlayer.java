@@ -8,9 +8,14 @@ public class TPlayer {
     private TLocation location;
     private int x;
     private int y;
+    private int org_x;
+    private int org_y;
 
     public TPlayer(int imageId) {
         this.setImageId(imageId);
+
+        this.org_x = -1;
+        this.org_y = -1;
     }
     public void setImageId(int id){
         imageId = id;
@@ -30,11 +35,19 @@ public class TPlayer {
     }
     public void setX(int x) {
         this.x = x;
+        if ( this.org_x < 0 ) {
+            this.org_x = x;
+        }
     }
     public int getY() {
         return y;
     }
     public void setY(int y) {
         this.y = y;
+        if ( this.org_y < 0 ) {
+            this.org_y = y;
+        }
     }
+    public int getOrgX() { return org_x; }
+    public int getOrgY() { return org_y; }
 }

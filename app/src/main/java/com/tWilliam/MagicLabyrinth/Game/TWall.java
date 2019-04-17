@@ -7,6 +7,8 @@ import android.os.Handler;
 
 import com.tWilliam.MagicLabyrinth.R;
 
+import java.lang.reflect.Method;
+
 public class TWall extends TMap {
     private boolean isWall;
 
@@ -41,26 +43,19 @@ public class TWall extends TMap {
 
     public void blink(){
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                setBackgroundColor(Color.parseColor("#ff0000"));
-            }
-        }, 300);
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                setBackgroundColor(Color.parseColor("#ffffff"));
-            }
-        }, 600);
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                setBackgroundColor(Color.parseColor("#ff0000"));
-            }
-        }, 900);
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                setBackgroundColor(Color.parseColor("#ffffff"));
-            }
-        }, 1200);
+
+        for ( int i = 1; i <= 4; i++ ) {
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    setBackgroundColor(Color.parseColor("#ff0000"));
+                }
+            }, 600 * i - 300);
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    setBackgroundColor(Color.parseColor("#ffffff"));
+                }
+            }, 600 * i);
+        }
     }
 
     public void setWall(boolean wall){
