@@ -46,6 +46,18 @@ public class TConstant {
             {0, 9, 9, 9, 9, 0},
             {4, 0, 9, 9, 0, 2}
     };
+    static final public int[] IMAGE_FOR_DICE_FILE_NAME = {
+            R.mipmap.Dice_0,
+            R.mipmap.Dice_1_b,
+            R.mipmap.Dice_2_b,
+            R.mipmap.Dice_2a_b,
+            R.mipmap.Dice_3_b,
+            R.mipmap.Dice_3a_b
+    };
+
+    static final public int EASY_WALL_COUNT = 19;
+    static final public int MIDEUM_WALL_COUNT = 22;
+    static final public int HARD_WALL_COUNT = 25;
 
 //    static final public int
 
