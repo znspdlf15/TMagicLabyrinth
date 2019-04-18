@@ -4,7 +4,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import com.tWilliam.MagicLabyrinth.R;
 import com.tWilliam.MagicLabyrinth.TLibrary.TConstant;
 
@@ -13,35 +17,54 @@ import java.util.Random;
 public class TStatusBoard extends ConstraintLayout {
     private TDice mDice;
     private TGameBoard gameBoard;
+    private ImageView targetImageView;
     private final int diceId = 1030;
+    private final int targetImageViewId = 1031;
 
-    public TStatusBoard(Context context, int statusBoardId) {
+    public TStatusBoard(Context context, int statusBoardId, TGameBoard gameBoard) {
         super(context);
 
         this.setId(statusBoardId);
-        this.setBackgroundResource(R.drawable.target_location);
+        this.gameBoard = gameBoard;
+
+        ConstraintSet constraintSet = new ConstraintSet();
 
         mDice = new TDice(context);
         mDice.setId(diceId);
         mDice.setImageResource(R.mipmap.dice_1_b);
         this.addView(mDice);
 
-        ConstraintSet constraintSet = new ConstraintSet();
+        targetImageView = new ImageView(context);
+        targetImageView.setId(targetImageViewId);
+        targetImageView.setImageResource(this.gameBoard.getTargetImageId());
+        Log.e(this.getClass().getSimpleName(), this.gameBoard.getTargetImageId() + "it's id.");
+        this.addView(targetImageView);
+
         constraintSet.clone(this);
+
+        constraintSet.constrainWidth(targetImageViewId, 200);
+        constraintSet.constrainHeight(targetImageViewId, 200);
+        constraintSet.connect(targetImageViewId, ConstraintSet.LEFT, statusBoardId, ConstraintSet.LEFT);
+        constraintSet.connect(targetImageViewId, ConstraintSet.RIGHT, statusBoardId, ConstraintSet.RIGHT);
+        constraintSet.connect(targetImageViewId, ConstraintSet.TOP, statusBoardId, ConstraintSet.TOP);
+        constraintSet.connect(targetImageViewId, ConstraintSet.BOTTOM, diceId, ConstraintSet.TOP);
+        constraintSet.setVerticalBias(targetImageViewId, (float)0.1);
+
+        constraintSet.applyTo(this);
 
         constraintSet.constrainWidth(diceId, 200);
         constraintSet.constrainHeight(diceId, 200);
-
         constraintSet.connect(diceId, ConstraintSet.LEFT, statusBoardId, ConstraintSet.LEFT);
         constraintSet.connect(diceId, ConstraintSet.RIGHT, statusBoardId, ConstraintSet.RIGHT);
-        constraintSet.connect(diceId, ConstraintSet.TOP, statusBoardId, ConstraintSet.TOP);
+        constraintSet.connect(diceId, ConstraintSet.TOP, targetImageViewId, ConstraintSet.BOTTOM);
         constraintSet.connect(diceId, ConstraintSet.BOTTOM, statusBoardId, ConstraintSet.BOTTOM);
-        constraintSet.setVerticalBias(diceId, (float)0.2);
+        constraintSet.setVerticalBias(diceId, (float)0.15);
+
         constraintSet.applyTo(this);
 
     }
 
-    public void setAllOnClickListner(View.OnClickListener listener){
+    public void setAllOnClickListener(View.OnClickListener listener){
         for ( int i = 0; i < this.getChildCount(); i++ ){
             this.getChildAt(i).setOnClickListener(listener);
         }
@@ -56,9 +79,5 @@ public class TStatusBoard extends ConstraintLayout {
                 gameBoard.notifyRoll(retRoll);
             }
         }
-    }
-
-    public void setGameBoard(TGameBoard gameBoard) {
-        this.gameBoard = gameBoard;
     }
 }

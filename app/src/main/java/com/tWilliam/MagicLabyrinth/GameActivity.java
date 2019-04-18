@@ -49,12 +49,12 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
         TPlayer[] players = {new TPlayer(R.mipmap.soccer_player), new TPlayer(R.mipmap.magician)};
         mGameBoard.enrollPlayers(players);
 
-        mGameBoard.setAllOnClickListner(this);
+        mGameBoard.setAllOnClickListener(this);
         backgroundLayout.addView(mGameBoard);
 
         // status board
         statusboardLayout = findViewById(R.id.game_status_board);
-        mStatusBoard = new TStatusBoard(statusboardLayout.getContext(), statusBoardId);
+        mStatusBoard = new TStatusBoard(statusboardLayout.getContext(), statusBoardId, mGameBoard);
 
         statusboardLayout.addView(mStatusBoard);
         ConstraintSet c = new ConstraintSet();
@@ -68,9 +68,8 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
         c.connect(statusBoardId, ConstraintSet.BOTTOM, R.id.game_status_board, ConstraintSet.BOTTOM, 0);
         c.applyTo(statusboardLayout);
 
-        mStatusBoard.setAllOnClickListner(this);
+        mStatusBoard.setAllOnClickListener(this);
 
-        mStatusBoard.setGameBoard(mGameBoard);
         mGameBoard.setStatusBoard(mStatusBoard);
     }
 

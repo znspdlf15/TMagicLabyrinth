@@ -11,6 +11,8 @@ public class TPlayer {
     private int org_x;
     private int org_y;
 
+    private int move_count;
+
     public TPlayer(int imageId) {
         this.setImageId(imageId);
 
@@ -50,4 +52,6 @@ public class TPlayer {
     }
     public int getOrgX() { return org_x; }
     public int getOrgY() { return org_y; }
+    public int getMove_count() { return move_count; }
+    public void setMove_count(int move_count) { this.move_count = move_count; }
 }

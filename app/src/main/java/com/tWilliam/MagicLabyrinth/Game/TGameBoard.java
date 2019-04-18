@@ -21,8 +21,8 @@ public class TGameBoard extends RelativeLayout {
     private TWall[][] horizontalWalls;
     private TStatusBoard statusBoard;
 
-    private int locationWidth = 65;
-    private int locationHeight = 65;
+    private int locationWidth = 62;
+    private int locationHeight = 62;
     private int wallWidth = 3;
     private int wallHeight = 65;
 
@@ -31,12 +31,13 @@ public class TGameBoard extends RelativeLayout {
     private int turnIdx;
 
     private ArrayList<TLocation> resetList = new ArrayList<>();
+    private ArrayList<TLocation> targetList = new ArrayList<>();
 
     public enum Status{
         WAIT,
         GOING
     }
-    private Status nowStatus = Status.WAIT;
+    private Status status = Status.WAIT;
 
     public TGameBoard(Context context, int wallNumber){
         super(context);
@@ -123,7 +124,10 @@ public class TGameBoard extends RelativeLayout {
             }
         }
 
+        initTargetList();
+        highlightNextTarget();
         initWalls(wallNumber);
+        showAllWalls();
     }
 
     public void enrollPlayers(TPlayer[] players){
@@ -273,7 +277,7 @@ public class TGameBoard extends RelativeLayout {
         return true;
     }
 
-    public void setAllOnClickListner(View.OnClickListener listener){
+    public void setAllOnClickListener(View.OnClickListener listener){
         for ( int y = 0; y < locationMap.length; y++ ){
             for ( int x = 0; x < locationMap[y].length; x++ ){
                 if (locationMap[y][x] == null)
@@ -313,9 +317,29 @@ public class TGameBoard extends RelativeLayout {
         }
     }
 
+    public void initTargetList(){
+        for ( int y = 0; y < TConstant.MAP_PLACE.length; y++ ){
+            for ( int x = 0; x < TConstant.MAP_PLACE[0].length; x++ ){
+                if ( TConstant.MAP_PLACE[y][x] != 9 )
+                    continue;
+
+                locationMap[y][x].setItem(true);
+                targetList.add(locationMap[y][x]);
+            }
+        }
+        Collections.shuffle(targetList);
+    }
+
+    public void highlightNextTarget(){
+        if ( !targetList.isEmpty() ){
+            TLocation target = targetList.get(0);
+            target.setHighlight(TLocation.highlightType.target);
+        }
+    }
+
     public void reactOnClick(View v){
         // if status is wait, no react
-        if ( nowStatus == Status.WAIT )
+        if ( status == Status.WAIT )
             return;
 
         int clickedX = -1;
@@ -400,6 +424,8 @@ public class TGameBoard extends RelativeLayout {
             int targetY = playerY + dir.DeltaY();
             if ( targetX < 0 || targetX >= locationMap[0].length || targetY < 0 || targetY >= locationMap.length )
                 continue;
+            if ( locationMap[targetY][targetX].isTarget() )
+                continue;
 
             if ( highlightOn ) {
                 locationMap[targetY][targetX].setHighlight(TLocation.highlightType.movable);
@@ -409,17 +435,25 @@ public class TGameBoard extends RelativeLayout {
     }
 
     public void notifyRoll(int rollNumber){
-        this.nowStatus = Status.GOING;
+        this.status = Status.GOING;
 
 
     }
 
     public Status getStatus(){
-        return this.nowStatus;
+        return this.status;
     }
 
 
     public void setStatusBoard(TStatusBoard statusBoard) {
         this.statusBoard = statusBoard;
     }
+
+    public int getTargetImageId(){
+        if ( targetList.isEmpty() )
+            return 0;
+
+        return this.targetList.get(0).getImageId();
+    }
 }
+ 
