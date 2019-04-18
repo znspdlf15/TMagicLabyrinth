@@ -1,7 +1,6 @@
 package com.tWilliam.MagicLabyrinth.Game;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class TGameBoard extends RelativeLayout {
     private TLocation[][] locationMap;
@@ -42,7 +42,6 @@ public class TGameBoard extends RelativeLayout {
     public TGameBoard(Context context, int wallNumber){
         super(context);
 
-        turnIdx = 0;
         int dp_10 = (int)TDPCalculator.DPToPixel(10, this.getContext());
         this.setPadding(dp_10, dp_10, dp_10, dp_10);
 
@@ -126,7 +125,7 @@ public class TGameBoard extends RelativeLayout {
         }
 
         initTargetList();
-        highlightNextTarget();
+        highlightNextTarget(true);
         initWalls(wallNumber);
         showAllWalls();
     }
@@ -175,6 +174,7 @@ public class TGameBoard extends RelativeLayout {
             this.addView(player);
         }
 
+        turnIdx = new Random().nextInt(players.length);
         setPlayerTurn(players[turnIdx]);
     }
 
@@ -333,10 +333,23 @@ public class TGameBoard extends RelativeLayout {
         Collections.shuffle(targetList);
     }
 
-    public void highlightNextTarget(){
+    public void setNextTarget(){
+        highlightNextTarget(false);
         if ( !targetList.isEmpty() ){
+            targetList.remove(0);
             TLocation target = targetList.get(0);
             target.setHighlight(TLocation.highlightType.target);
+            statusBoard.notifyTargetChange();
+        }
+    }
+
+    public void highlightNextTarget(boolean on){
+        if ( !targetList.isEmpty() ){
+            TLocation target = targetList.get(0);
+            if ( on )
+                target.setHighlight(TLocation.highlightType.target);
+            else
+                target.setHighlight(TLocation.highlightType.normal);
         }
     }
 
@@ -406,11 +419,18 @@ public class TGameBoard extends RelativeLayout {
         movingPlayer.getLocation().setY(locationMap[targetY][targetX].getY());
 
         movingPlayer.setMoveCount(movingPlayer.getMoveCount()-1);
+
+        if ( locationMap[targetY][targetX].isTarget() ){
+            movingPlayer.addScore();
+            locationMap[targetY][targetX].setImageAlpha(50);
+            setNextTarget();
+        }
         if ( movingPlayer.getMoveCount() == 0 )
             nextTurn();
     }
 
     public void nextTurn(){
+        this.players[turnIdx].setMoveCount(0);
         this.turnIdx = (this.turnIdx + 1) % players.length;
 
         this.setPlayerTurn(players[turnIdx]);
@@ -434,6 +454,7 @@ public class TGameBoard extends RelativeLayout {
         movingPlayer.getLocation().setY(locationMap[orgY][orgX].getY());
 
         this.unhighlightLocations();
+        this.nextTurn();
     }
 
     public void highlightNearPlayer(TPlayer player, boolean highlightOn){
@@ -464,7 +485,6 @@ public class TGameBoard extends RelativeLayout {
     public Status getStatus(){
         return this.status;
     }
-
 
     public void setStatusBoard(TStatusBoard statusBoard) {
         this.statusBoard = statusBoard;

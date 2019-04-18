@@ -5,13 +5,18 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.tWilliam.MagicLabyrinth.Player.TPlayer;
 import com.tWilliam.MagicLabyrinth.R;
 
 public class TStatusBoard extends ConstraintLayout {
     private TDice mDice;
     private TGameBoard gameBoard;
     private ImageView targetImageView;
+    private ImageView[] playerImageViews;
+    private TextView[] scoreTextViews;
+
     private final int diceId = 1030;
     private final int targetImageViewId = 1031;
 
@@ -31,7 +36,7 @@ public class TStatusBoard extends ConstraintLayout {
 
         targetImageView = new ImageView(context);
         targetImageView.setId(targetImageViewId);
-        targetImageView.setImageResource(this.gameBoard.getTargetImageId());
+        notifyTargetChange();
         this.addView(targetImageView);
 
         constraintSet.clone(this);
@@ -83,5 +88,69 @@ public class TStatusBoard extends ConstraintLayout {
     }
     public void notifyTurnEnd(){
         this.highlightDice(true);
+    }
+    public void notifyTargetChange(){
+        targetImageView.setImageResource(this.gameBoard.getTargetImageId());
+    }
+    public void enrollPlayers(TPlayer[] players){
+        playerImageViews = new ImageView[players.length];
+        scoreTextViews = new TextView[players.length];
+
+        for ( int i = 0; i < players.length; i++ ){
+            playerImageViews[i] = new ImageView(this.getContext());
+            scoreTextViews[i] = new TextView(this.getContext());
+            playerImageViews[i].setImageResource(players[i].getImageId());
+            scoreTextViews[i].setText(players[i].getScore() + "");
+            scoreTextViews[i].setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            scoreTextViews[i].setTextSize(20);
+        }
+
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(this);
+        for ( int i = 0; i < players.length; i++ ){
+            int imageId = 11 + i;
+            int textId = 21 + i;
+
+            playerImageViews[i].setId(imageId);
+            constraintSet.constrainWidth(imageId, 150);
+            constraintSet.constrainHeight(imageId, 150);
+
+            scoreTextViews[i].setId(textId);
+            constraintSet.constrainWidth(textId, 150);
+            constraintSet.constrainHeight(textId, 100);
+
+            this.addView(playerImageViews[i]);
+            this.addView(scoreTextViews[i]);
+
+            switch ( i ){
+                case 0:
+                    constraintSet.connect(imageId, ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT, 50);
+                    constraintSet.connect(imageId, ConstraintSet.TOP, this.getId(), ConstraintSet.TOP, 50);
+                    constraintSet.connect(textId, ConstraintSet.TOP, imageId, ConstraintSet.BOTTOM);
+                    constraintSet.connect(textId, ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT, 50);
+                    break;
+                case 1:
+                    constraintSet.connect(imageId, ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT, 50);
+                    constraintSet.connect(imageId, ConstraintSet.TOP, this.getId(), ConstraintSet.TOP, 50);
+                    constraintSet.connect(textId, ConstraintSet.TOP, imageId, ConstraintSet.BOTTOM);
+                    constraintSet.connect(textId, ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT, 50);
+                    break;
+                case 2:
+                    constraintSet.connect(textId, ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT, 50);
+                    constraintSet.connect(imageId, ConstraintSet.BOTTOM, textId, ConstraintSet.TOP);
+                    constraintSet.connect(textId, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM, 50);
+                    constraintSet.connect(textId, ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT, 50);
+                    break;
+                case 3:
+                    constraintSet.connect(textId, ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT, 50);
+                    constraintSet.connect(imageId, ConstraintSet.BOTTOM, textId, ConstraintSet.TOP);
+                    constraintSet.connect(textId, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM, 50);
+                    constraintSet.connect(textId, ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT, 50);
+                    break;
+                default:
+                    break;
+            }
+            constraintSet.applyTo(this);
+        }
     }
 }

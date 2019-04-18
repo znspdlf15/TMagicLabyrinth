@@ -46,9 +46,6 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         mGameBoard.setLayoutParams(layoutParams);
 
-        TPlayer[] players = {new TPlayer(R.mipmap.soccer_player), new TPlayer(R.mipmap.magician)};
-        mGameBoard.enrollPlayers(players);
-
         mGameBoard.setAllOnClickListener(this);
         backgroundLayout.addView(mGameBoard);
 
@@ -69,6 +66,10 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
         c.applyTo(statusboardLayout);
 
         mStatusBoard.setAllOnClickListener(this);
+
+        TPlayer[] players = {new TPlayer(R.mipmap.soccer_player), new TPlayer(R.mipmap.magician)};
+        mGameBoard.enrollPlayers(players);
+        mStatusBoard.enrollPlayers(players);
 
         mGameBoard.setStatusBoard(mStatusBoard);
     }
