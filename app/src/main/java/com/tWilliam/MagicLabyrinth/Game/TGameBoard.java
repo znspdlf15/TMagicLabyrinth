@@ -19,6 +19,7 @@ public class TGameBoard extends RelativeLayout {
     private TLocation[][] locationMap;
     private TWall[][] verticalWalls;
     private TWall[][] horizontalWalls;
+    private TStatusBoard statusBoard;
 
     private int locationWidth = 65;
     private int locationHeight = 65;
@@ -30,6 +31,12 @@ public class TGameBoard extends RelativeLayout {
     private int turnIdx;
 
     private ArrayList<TLocation> resetList = new ArrayList<>();
+
+    public enum Status{
+        WAIT,
+        GOING
+    }
+    private Status nowStatus = Status.WAIT;
 
     public TGameBoard(Context context, int wallNumber){
         super(context);
@@ -307,6 +314,10 @@ public class TGameBoard extends RelativeLayout {
     }
 
     public void reactOnClick(View v){
+        // if status is wait, no react
+        if ( nowStatus == Status.WAIT )
+            return;
+
         int clickedX = -1;
         int clickedY = -1;
 
@@ -395,5 +406,20 @@ public class TGameBoard extends RelativeLayout {
                 resetList.add(locationMap[targetY][targetX]);
             }
         }
+    }
+
+    public void notifyRoll(int rollNumber){
+        this.nowStatus = Status.GOING;
+
+
+    }
+
+    public Status getStatus(){
+        return this.nowStatus;
+    }
+
+
+    public void setStatusBoard(TStatusBoard statusBoard) {
+        this.statusBoard = statusBoard;
     }
 }

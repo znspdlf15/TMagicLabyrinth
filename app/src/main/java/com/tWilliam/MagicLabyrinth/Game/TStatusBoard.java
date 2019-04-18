@@ -3,75 +3,62 @@ package com.tWilliam.MagicLabyrinth.Game;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.view.View;
 import com.tWilliam.MagicLabyrinth.R;
+import com.tWilliam.MagicLabyrinth.TLibrary.TConstant;
+
+import java.util.Random;
 
 public class TStatusBoard extends ConstraintLayout {
-    private ConstraintLayout leftLayout;
-    private ConstraintLayout centerLayout;
-    private ConstraintLayout rightLayout;
-
-    private final int leftId = 1001;
-    private final int centerId = 1002;
-    private final int rightId = 1003;
-
     private TDice mDice;
+    private TGameBoard gameBoard;
+    private final int diceId = 1030;
 
-    public TStatusBoard(Context context) {
+    public TStatusBoard(Context context, int statusBoardId) {
         super(context);
 
-        leftLayout = new ConstraintLayout(this.getContext());
-        leftLayout.setId(leftId);
-        centerLayout = new ConstraintLayout(this.getContext());
-        centerLayout.setId(centerId);
-        rightLayout = new ConstraintLayout(this.getContext());
-        rightLayout.setId(rightId);
+        this.setId(statusBoardId);
+        this.setBackgroundResource(R.drawable.target_location);
 
-        ConstraintLayout.LayoutParams statusParams = new ConstraintLayout.LayoutParams(0, 0);
-        statusParams.bottomToBottom = this.getId();
-        statusParams.leftToLeft = this.getId();
-        statusParams.rightToLeft = centerId;
-        statusParams.topToTop = this.getId();
-        leftLayout.setLayoutParams(statusParams);
-        leftLayout.setBackgroundColor(Color.parseColor("#ff0000"));
-        this.addView(leftLayout);
+        mDice = new TDice(context);
+        mDice.setId(diceId);
+        mDice.setImageResource(R.mipmap.dice_1_b);
+        this.addView(mDice);
 
-        statusParams = new ConstraintLayout.LayoutParams(0, 0);
-        statusParams.bottomToBottom = this.getId();
-        statusParams.leftToRight = leftId;
-        statusParams.rightToLeft = rightId;
-        statusParams.topToTop = this.getId();
-        centerLayout.setLayoutParams(statusParams);
-        centerLayout.setBackgroundColor(Color.parseColor("#00ff00"));
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(this);
 
-        this.addView(centerLayout);
+        constraintSet.constrainWidth(diceId, 200);
+        constraintSet.constrainHeight(diceId, 200);
 
-        statusParams = new ConstraintLayout.LayoutParams(0, 0);
-        statusParams.bottomToBottom = this.getId();
-        statusParams.leftToRight = centerId;
-        statusParams.rightToRight = this.getId();
-        statusParams.topToTop = this.getId();
-        rightLayout.setLayoutParams(statusParams);
-        rightLayout.setBackgroundColor(Color.parseColor("#0000ff"));
+        constraintSet.connect(diceId, ConstraintSet.LEFT, statusBoardId, ConstraintSet.LEFT);
+        constraintSet.connect(diceId, ConstraintSet.RIGHT, statusBoardId, ConstraintSet.RIGHT);
+        constraintSet.connect(diceId, ConstraintSet.TOP, statusBoardId, ConstraintSet.TOP);
+        constraintSet.connect(diceId, ConstraintSet.BOTTOM, statusBoardId, ConstraintSet.BOTTOM);
+        constraintSet.setVerticalBias(diceId, (float)0.2);
+        constraintSet.applyTo(this);
 
-        this.addView(rightLayout);
-
-        mDice = new TDice(centerLayout.getContext());
-        statusParams = new ConstraintLayout.LayoutParams(0, 0);
-        statusParams.bottomToBottom = centerId;
-        statusParams.leftToLeft = centerId;
-        statusParams.rightToRight = centerId;
-        statusParams.topToTop = centerId;
-        rightLayout.setLayoutParams(statusParams);
-
-        mDice.setImageResource(R.mipmap.dice_0);
-        centerLayout.addView(mDice);
     }
 
     public void setAllOnClickListner(View.OnClickListener listener){
-
+        for ( int i = 0; i < this.getChildCount(); i++ ){
+            this.getChildAt(i).setOnClickListener(listener);
+        }
     }
     public void reactOnClick(View v){
+        if ( v == mDice ){
+            if ( gameBoard.getStatus() == TGameBoard.Status.GOING )
+                return;
 
+            int retRoll = mDice.roll();
+            if ( retRoll != -1 ){
+                gameBoard.notifyRoll(retRoll);
+            }
+        }
+    }
+
+    public void setGameBoard(TGameBoard gameBoard) {
+        this.gameBoard = gameBoard;
     }
 }

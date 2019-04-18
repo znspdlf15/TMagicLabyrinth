@@ -7,16 +7,12 @@ import android.support.constraint.ConstraintSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.view.View.OnTouchListener;
 
-import com.tWilliam.MagicLabyrinth.Game.TDice;
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
 import com.tWilliam.MagicLabyrinth.Game.TStatusBoard;
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
@@ -31,8 +27,10 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
 
     private RelativeLayout backgroundLayout;
     private TGameBoard mGameBoard;
+
     private ConstraintLayout statusboardLayout;
     private TStatusBoard mStatusBoard;
+    private final int statusBoardId = 100001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,20 +54,24 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
 
         // status board
         statusboardLayout = findViewById(R.id.game_status_board);
+        mStatusBoard = new TStatusBoard(statusboardLayout.getContext(), statusBoardId);
 
-        mStatusBoard = new TStatusBoard(statusboardLayout.getContext());
-        ConstraintSet constraintSet = new ConstraintSet();
+        statusboardLayout.addView(mStatusBoard);
+        ConstraintSet c = new ConstraintSet();
+        c.clone(statusboardLayout);
 
-//        constraintSet.connect(R.id.game_status_board, ConstraintSet.)
-        ConstraintLayout.LayoutParams statusParams = new ConstraintLayout.LayoutParams(0, 0);
-        statusParams.bottomToBottom = R.id.game_status_board;
-        statusParams.leftToLeft = R.id.game_status_board;
-        statusParams.rightToRight = R.id.game_status_board;
-        statusParams.topToTop = R.id.game_status_board;
-        mStatusBoard.setLayoutParams(statusParams);
+        c.constrainWidth(statusBoardId, ConstraintSet.MATCH_CONSTRAINT);
+        c.constrainHeight(statusBoardId, ConstraintSet.MATCH_CONSTRAINT);
+        c.connect(statusBoardId, ConstraintSet.LEFT, R.id.game_status_board, ConstraintSet.LEFT, 0);
+        c.connect(statusBoardId, ConstraintSet.RIGHT, R.id.game_status_board, ConstraintSet.RIGHT, 0);
+        c.connect(statusBoardId, ConstraintSet.TOP, R.id.game_status_board, ConstraintSet.TOP, 0);
+        c.connect(statusBoardId, ConstraintSet.BOTTOM, R.id.game_status_board, ConstraintSet.BOTTOM, 0);
+        c.applyTo(statusboardLayout);
 
         mStatusBoard.setAllOnClickListner(this);
-        statusboardLayout.addView(mStatusBoard);
+
+        mStatusBoard.setGameBoard(mGameBoard);
+        mGameBoard.setStatusBoard(mStatusBoard);
     }
 
     @Override

@@ -47,7 +47,7 @@ public class TConstant {
             {4, 0, 9, 9, 0, 2}
     };
     static final public int[] IMAGE_FOR_DICE_FILE_NAME = {
-            R.mipmap.dice_0,
+//            R.mipmap.dice_0,
             R.mipmap.dice_1_b,
             R.mipmap.dice_2_b,
             R.mipmap.dice_2a_b,
