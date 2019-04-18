@@ -42,6 +42,7 @@ public class TGameBoard extends RelativeLayout {
     public TGameBoard(Context context, int wallNumber){
         super(context);
 
+        turnIdx = 0;
         int dp_10 = (int)TDPCalculator.DPToPixel(10, this.getContext());
         this.setPadding(dp_10, dp_10, dp_10, dp_10);
 
@@ -173,6 +174,8 @@ public class TGameBoard extends RelativeLayout {
 
             this.addView(player);
         }
+
+        setPlayerTurn(players[turnIdx]);
     }
 
     public void initWalls(int wallNumber){
@@ -401,6 +404,24 @@ public class TGameBoard extends RelativeLayout {
         movingPlayer.setY(targetY);
         movingPlayer.getLocation().setX(locationMap[targetY][targetX].getX());
         movingPlayer.getLocation().setY(locationMap[targetY][targetX].getY());
+
+        movingPlayer.setMoveCount(movingPlayer.getMoveCount()-1);
+        if ( movingPlayer.getMoveCount() == 0 )
+            nextTurn();
+    }
+
+    public void nextTurn(){
+        this.turnIdx = (this.turnIdx + 1) % players.length;
+
+        this.setPlayerTurn(players[turnIdx]);
+    }
+
+    public void setPlayerTurn(TPlayer player){
+        this.status = Status.WAIT;
+        this.highlightNearPlayer(player, true);
+
+        if ( this.statusBoard != null )
+            this.statusBoard.notifyTurnEnd();
     }
 
     public void moveFailPlayer(TPlayer movingPlayer, int targetX, int targetY){
@@ -437,7 +458,7 @@ public class TGameBoard extends RelativeLayout {
     public void notifyRoll(int rollNumber){
         this.status = Status.GOING;
 
-
+        this.players[turnIdx].setMoveCount(rollNumber);
     }
 
     public Status getStatus(){

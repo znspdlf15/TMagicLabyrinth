@@ -1,18 +1,12 @@
 package com.tWilliam.MagicLabyrinth.Game;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.tWilliam.MagicLabyrinth.R;
-import com.tWilliam.MagicLabyrinth.TLibrary.TConstant;
-
-import java.util.Random;
 
 public class TStatusBoard extends ConstraintLayout {
     private TDice mDice;
@@ -33,11 +27,11 @@ public class TStatusBoard extends ConstraintLayout {
         mDice.setId(diceId);
         mDice.setImageResource(R.mipmap.dice_1_b);
         this.addView(mDice);
+        highlightDice(true);
 
         targetImageView = new ImageView(context);
         targetImageView.setId(targetImageViewId);
         targetImageView.setImageResource(this.gameBoard.getTargetImageId());
-        Log.e(this.getClass().getSimpleName(), this.gameBoard.getTargetImageId() + "it's id.");
         this.addView(targetImageView);
 
         constraintSet.clone(this);
@@ -77,7 +71,17 @@ public class TStatusBoard extends ConstraintLayout {
             int retRoll = mDice.roll();
             if ( retRoll != -1 ){
                 gameBoard.notifyRoll(retRoll);
+                this.highlightDice(false);
             }
         }
+    }
+    public void highlightDice(boolean set){
+        if ( set )
+            this.mDice.setBackgroundResource(R.drawable.alert_corner);
+        else
+            this.mDice.setBackgroundResource(0);
+    }
+    public void notifyTurnEnd(){
+        this.highlightDice(true);
     }
 }

@@ -11,11 +11,14 @@ public class TPlayer {
     private int org_x;
     private int org_y;
 
+    private int score;
     private int move_count;
 
     public TPlayer(int imageId) {
         this.setImageId(imageId);
 
+        this.move_count = 0;
+        this.score = 0;
         this.org_x = -1;
         this.org_y = -1;
     }
@@ -41,6 +44,8 @@ public class TPlayer {
             this.org_x = x;
         }
     }
+
+
     public int getY() {
         return y;
     }
@@ -50,8 +55,14 @@ public class TPlayer {
             this.org_y = y;
         }
     }
+    public int getScore(){
+        return this.score;
+    }
+    public void addScore(){
+        this.score++;
+    }
     public int getOrgX() { return org_x; }
     public int getOrgY() { return org_y; }
-    public int getMove_count() { return move_count; }
-    public void setMove_count(int move_count) { this.move_count = move_count; }
+    public int getMoveCount() { return move_count; }
+    public void setMoveCount(int move_count) { this.move_count = move_count; }
 }
