@@ -397,11 +397,18 @@ public class TGameBoard extends RelativeLayout {
             if ( canPlayerGo(playerX, playerY, dir) ){
                 movePlayer(players[turnIdx], targetX, targetY);
                 this.unhighlightLocations();
+
                 if ( players[turnIdx].getScore() >= goalScore ){
                     winner = players[turnIdx];
                     return TActivityConstant.ActivityReactType.DESTROY;
                 }
 
+                if ( locationMap[targetY][targetX].isTarget() ){
+                    players[turnIdx].addScore();
+                    locationMap[targetY][targetX].setImageAlpha(50);
+                    setNextTarget();
+                }
+                
                 if ( players[turnIdx].getMoveCount() == 0 )
                     nextTurn();
 
@@ -433,12 +440,6 @@ public class TGameBoard extends RelativeLayout {
         movingPlayer.getLocation().setY(locationMap[targetY][targetX].getY());
 
         movingPlayer.setMoveCount(movingPlayer.getMoveCount()-1);
-
-        if ( locationMap[targetY][targetX].isTarget() ){
-            movingPlayer.addScore();
-            locationMap[targetY][targetX].setImageAlpha(50);
-            setNextTarget();
-        }
     }
 
     public void nextTurn(){
