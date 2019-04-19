@@ -1,29 +1,19 @@
 package com.tWilliam.MagicLabyrinth;
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.view.View.OnTouchListener;
 
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
 import com.tWilliam.MagicLabyrinth.Game.TStatusBoard;
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
+import com.tWilliam.MagicLabyrinth.TLibrary.TActivityConstant;
+import com.tWilliam.MagicLabyrinth.TLibrary.TIntentCode;
 
 public class GameActivity extends StandardActivity implements View.OnClickListener {
-    private ScaleGestureDetector mScaleGestureDetector;
-    private float mScaleFactor = 1.0f;
-    private ImageView mImageView;
-
-    private int _xDelta;
-    private int _yDelta;
 
     private RelativeLayout backgroundLayout;
     private TGameBoard mGameBoard;
@@ -31,6 +21,8 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
     private ConstraintLayout statusboardLayout;
     private TStatusBoard mStatusBoard;
     private final int statusBoardId = 100001;
+    private int goalScore = 5;
+    private int wallNumber = 25;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +32,7 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
         backgroundLayout = findViewById(R.id.game_board);
 
         // game board
-        mGameBoard = new TGameBoard(backgroundLayout.getContext(), 25);
+        mGameBoard = new TGameBoard(backgroundLayout.getContext(), this.wallNumber, this.goalScore);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
@@ -76,7 +68,27 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        mGameBoard.reactOnClick(v);
+        TActivityConstant.ActivityReactType type;
+
+        type = mGameBoard.reactOnClick(v);
         mStatusBoard.reactOnClick(v);
+
+        if ( TActivityConstant.ActivityReactType.DESTROY == type ){
+            if ( mGameBoard.getWinner() != null ){
+                int imageId = mGameBoard.getWinner().getImageId();
+                Intent intent = new Intent(this, WinPopUpActivity.class);
+                intent.putExtra("imageId", imageId);
+                startActivityForResult(intent, TIntentCode.WINNER_ACTIVITY_CODE);
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if( requestCode == TIntentCode.WINNER_ACTIVITY_CODE ){
+            if( resultCode == RESULT_OK ){
+                finish();
+            }
+        }
     }
 }

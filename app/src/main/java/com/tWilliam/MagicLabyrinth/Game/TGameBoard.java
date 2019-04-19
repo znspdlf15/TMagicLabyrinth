@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
+import com.tWilliam.MagicLabyrinth.TLibrary.TActivityConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TDPCalculator;
 import com.tWilliam.MagicLabyrinth.TLibrary.TDirection;
@@ -24,7 +25,10 @@ public class TGameBoard extends RelativeLayout {
     private int locationWidth = 62;
     private int locationHeight = 62;
     private int wallWidth = 3;
-    private int wallHeight = 65;
+    private int wallHeight = 62;
+
+    private final int goalScore;
+    private TPlayer winner;
 
     private ArrayList<TPlayer> playerLocations = new ArrayList<>();
     private TPlayer[] players;
@@ -39,7 +43,7 @@ public class TGameBoard extends RelativeLayout {
     }
     private Status status = Status.WAIT;
 
-    public TGameBoard(Context context, int wallNumber){
+    public TGameBoard(Context context, int wallNumber, int goalScore){
         super(context);
 
         int dp_10 = (int)TDPCalculator.DPToPixel(10, this.getContext());
@@ -49,6 +53,7 @@ public class TGameBoard extends RelativeLayout {
         verticalWalls = new TWall[6][5];
         horizontalWalls = new TWall[5][6];
 
+        this.goalScore = goalScore;
         int imageIdx = 0;
         for ( int y = 0; y < locationMap.length; y++ ){
             for ( int x = 0; x < locationMap[0].length; x++ ){
@@ -127,7 +132,6 @@ public class TGameBoard extends RelativeLayout {
         initTargetList();
         highlightNextTarget(true);
         initWalls(wallNumber);
-        showAllWalls();
     }
 
     public void enrollPlayers(TPlayer[] players){
@@ -341,6 +345,7 @@ public class TGameBoard extends RelativeLayout {
             target.setHighlight(TLocation.highlightType.target);
             statusBoard.notifyTargetChange();
         }
+        this.statusBoard.notifyScoreChange(players);
     }
 
     public void highlightNextTarget(boolean on){
@@ -353,10 +358,10 @@ public class TGameBoard extends RelativeLayout {
         }
     }
 
-    public void reactOnClick(View v){
+    public TActivityConstant.ActivityReactType reactOnClick(View v){
         // if status is wait, no react
         if ( status == Status.WAIT )
-            return;
+            return TActivityConstant.ActivityReactType.NONE;
 
         int clickedX = -1;
         int clickedY = -1;
@@ -391,8 +396,15 @@ public class TGameBoard extends RelativeLayout {
 
             if ( canPlayerGo(playerX, playerY, dir) ){
                 movePlayer(players[turnIdx], targetX, targetY);
-                // for debug
                 this.unhighlightLocations();
+                if ( players[turnIdx].getScore() >= goalScore ){
+                    winner = players[turnIdx];
+                    return TActivityConstant.ActivityReactType.DESTROY;
+                }
+
+                if ( players[turnIdx].getMoveCount() == 0 )
+                    nextTurn();
+
                 this.highlightNearPlayer(players[turnIdx], true);
             } else {
                 this.moveFailPlayer(players[turnIdx], targetX, targetY);
@@ -403,6 +415,8 @@ public class TGameBoard extends RelativeLayout {
                 }
             }
         }
+
+        return TActivityConstant.ActivityReactType.NONE;
     }
 
     public void unhighlightLocations(){
@@ -425,8 +439,6 @@ public class TGameBoard extends RelativeLayout {
             locationMap[targetY][targetX].setImageAlpha(50);
             setNextTarget();
         }
-        if ( movingPlayer.getMoveCount() == 0 )
-            nextTurn();
     }
 
     public void nextTurn(){
@@ -495,6 +507,10 @@ public class TGameBoard extends RelativeLayout {
             return 0;
 
         return this.targetList.get(0).getImageId();
+    }
+
+    public TPlayer getWinner(){
+        return winner;
     }
 }
  

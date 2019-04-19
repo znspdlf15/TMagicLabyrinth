@@ -126,24 +126,24 @@ public class TStatusBoard extends ConstraintLayout {
                 case 0:
                     constraintSet.connect(imageId, ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT, 50);
                     constraintSet.connect(imageId, ConstraintSet.TOP, this.getId(), ConstraintSet.TOP, 50);
-                    constraintSet.connect(textId, ConstraintSet.TOP, imageId, ConstraintSet.BOTTOM);
+                    constraintSet.connect(textId, ConstraintSet.TOP, imageId, ConstraintSet.BOTTOM, 50);
                     constraintSet.connect(textId, ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT, 50);
                     break;
                 case 1:
                     constraintSet.connect(imageId, ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT, 50);
                     constraintSet.connect(imageId, ConstraintSet.TOP, this.getId(), ConstraintSet.TOP, 50);
-                    constraintSet.connect(textId, ConstraintSet.TOP, imageId, ConstraintSet.BOTTOM);
+                    constraintSet.connect(textId, ConstraintSet.TOP, imageId, ConstraintSet.BOTTOM, 50);
                     constraintSet.connect(textId, ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT, 50);
                     break;
                 case 2:
                     constraintSet.connect(textId, ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT, 50);
-                    constraintSet.connect(imageId, ConstraintSet.BOTTOM, textId, ConstraintSet.TOP);
+                    constraintSet.connect(imageId, ConstraintSet.BOTTOM, textId, ConstraintSet.TOP, 50);
                     constraintSet.connect(textId, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM, 50);
                     constraintSet.connect(textId, ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT, 50);
                     break;
                 case 3:
                     constraintSet.connect(textId, ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT, 50);
-                    constraintSet.connect(imageId, ConstraintSet.BOTTOM, textId, ConstraintSet.TOP);
+                    constraintSet.connect(imageId, ConstraintSet.BOTTOM, textId, ConstraintSet.TOP, 50);
                     constraintSet.connect(textId, ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM, 50);
                     constraintSet.connect(textId, ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT, 50);
                     break;
@@ -151,6 +151,12 @@ public class TStatusBoard extends ConstraintLayout {
                     break;
             }
             constraintSet.applyTo(this);
+        }
+    }
+
+    public void notifyScoreChange(TPlayer[] players){
+        for ( int i = 0; i < players.length; i++ ){
+            scoreTextViews[i].setText(players[i].getScore() + "");
         }
     }
 }
