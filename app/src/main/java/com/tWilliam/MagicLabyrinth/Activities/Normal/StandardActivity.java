@@ -1,4 +1,4 @@
-package com.tWilliam.MagicLabyrinth;
+package com.tWilliam.MagicLabyrinth.Activities.Normal;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

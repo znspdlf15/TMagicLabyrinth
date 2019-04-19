@@ -1,4 +1,4 @@
-package com.tWilliam.MagicLabyrinth;
+package com.tWilliam.MagicLabyrinth.Activities.PopUp;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.tWilliam.MagicLabyrinth.R;
 import com.tWilliam.MagicLabyrinth.TLibrary.TActivityConstant;
 
 public class WinPopUpActivity extends Activity {

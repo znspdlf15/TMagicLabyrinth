@@ -1,9 +1,11 @@
-package com.tWilliam.MagicLabyrinth;
+package com.tWilliam.MagicLabyrinth.Activities.Normal;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+
+import com.tWilliam.MagicLabyrinth.R;
 
 public class MainActivity extends StandardActivity implements View.OnClickListener {
     private int[] ClickEventItems = {

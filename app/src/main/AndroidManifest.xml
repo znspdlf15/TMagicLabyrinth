@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity android:name=".Activities.Normal.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,10 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GameActivity"
+        <activity android:name=".Activities.Normal.GameActivity"
             android:screenOrientation="portrait"/>
         
-        <activity android:name=".WinPopUpActivity"
+        <activity android:name=".Activities.PopUp.WinPopUpActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"/>
+
+        <activity android:name=".Activities.PopUp.RecheckExitActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog"/>
 

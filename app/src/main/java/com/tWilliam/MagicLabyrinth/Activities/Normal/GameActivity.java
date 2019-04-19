@@ -1,4 +1,4 @@
-package com.tWilliam.MagicLabyrinth;
+package com.tWilliam.MagicLabyrinth.Activities.Normal;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,11 +7,14 @@ import android.support.constraint.ConstraintSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.tWilliam.MagicLabyrinth.Activities.PopUp.RecheckExitActivity;
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
 import com.tWilliam.MagicLabyrinth.Game.TStatusBoard;
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
+import com.tWilliam.MagicLabyrinth.R;
 import com.tWilliam.MagicLabyrinth.TLibrary.TActivityConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TIntentCode;
+import com.tWilliam.MagicLabyrinth.Activities.PopUp.WinPopUpActivity;
 
 public class GameActivity extends StandardActivity implements View.OnClickListener {
 
@@ -85,10 +88,25 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if( requestCode == TIntentCode.WINNER_ACTIVITY_CODE ){
-            if( resultCode == RESULT_OK ){
-                finish();
-            }
+        switch ( requestCode ){
+            case TIntentCode.WINNER_ACTIVITY_CODE:
+                if ( resultCode == RESULT_OK ){
+                    finish();
+                }
+                break;
+            case TIntentCode.RECHECK_EXIT_ACTIVITY_CODE:
+                if ( resultCode == RESULT_OK ){
+                    finish();
+                }
+                break;
+            default:
+                break;
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(this, RecheckExitActivity.class);
+        startActivityForResult(intent, TIntentCode.RECHECK_EXIT_ACTIVITY_CODE);
     }
 }
