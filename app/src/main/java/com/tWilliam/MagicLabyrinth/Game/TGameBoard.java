@@ -408,7 +408,7 @@ public class TGameBoard extends RelativeLayout {
                     locationMap[targetY][targetX].setImageAlpha(50);
                     setNextTarget();
                 }
-                
+
                 if ( players[turnIdx].getMoveCount() == 0 )
                     nextTurn();
 

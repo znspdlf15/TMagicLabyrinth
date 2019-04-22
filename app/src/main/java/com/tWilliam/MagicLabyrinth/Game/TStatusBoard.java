@@ -73,11 +73,12 @@ public class TStatusBoard extends ConstraintLayout {
             if ( gameBoard.getStatus() == TGameBoard.Status.GOING )
                 return;
 
-            int retRoll = mDice.roll();
-            if ( retRoll != -1 ){
-                gameBoard.notifyRoll(retRoll);
-                this.highlightDice(false);
-            }
+            mDice.roll(new TDice.DiceCallBack() {
+                @Override
+                public void diceRollEnd(int rollCount) {
+                    notifyRollEnd(rollCount);
+                }
+            });
         }
     }
     public void highlightDice(boolean set){
@@ -152,6 +153,11 @@ public class TStatusBoard extends ConstraintLayout {
             }
             constraintSet.applyTo(this);
         }
+    }
+
+    public void notifyRollEnd(int retRoll){
+        gameBoard.notifyRoll(retRoll);
+        this.highlightDice(false);
     }
 
     public void notifyScoreChange(TPlayer[] players){
