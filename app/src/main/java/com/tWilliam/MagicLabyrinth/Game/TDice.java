@@ -22,15 +22,14 @@ public class TDice extends TDraw {
 
         final DiceCallBack innerCallBack = callBack;
 
-        for ( int i = 1; i <= 9; i++ ) {
+        for ( int i = 0; i < 9; i++ ) {
+            final int index = i % TConstant.IMAGE_FOR_DICE_FILE_NAME.length;
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    Random randomGenerator = new Random();
-                    int index = randomGenerator.nextInt(TConstant.IMAGE_FOR_DICE_FILE_NAME.length);
                     int imageId = TConstant.IMAGE_FOR_DICE_FILE_NAME[index];
                     setImageResource(imageId);
                 }
-            }, 100 * i);
+            }, 100 * (i + 1));
         }
         handler.postDelayed(new Runnable() {
             public void run() {
