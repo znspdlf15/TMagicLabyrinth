@@ -20,6 +20,16 @@ public class TStatusBoard extends ConstraintLayout {
     private final int diceId = 1030;
     private final int targetImageViewId = 1031;
 
+    public static class status {
+        private static boolean DICE_ROLLABLE = false;
+        public static boolean isDiceRollable() {
+            return DICE_ROLLABLE;
+        }
+        public static void setDiceRollable(boolean diceRollable) {
+            DICE_ROLLABLE = diceRollable;
+        }
+    }
+
     public TStatusBoard(Context context, int statusBoardId, TGameBoard gameBoard) {
         super(context);
 
@@ -70,9 +80,10 @@ public class TStatusBoard extends ConstraintLayout {
     }
     public void reactOnClick(View v){
         if ( v == mDice ){
-            if ( gameBoard.getStatus() == TGameBoard.Status.GOING )
+            if ( !status.isDiceRollable() )
                 return;
 
+            status.setDiceRollable(false);
             mDice.roll(new TDice.DiceCallBack() {
                 @Override
                 public void diceRollEnd(int rollCount) {
@@ -87,7 +98,11 @@ public class TStatusBoard extends ConstraintLayout {
         else
             this.mDice.setBackgroundResource(0);
     }
-    public void notifyTurnEnd(){
+    public void notifyTurnEnd(TPlayer player){
+        if ( !player.isLocalPlayer() )
+            return;
+
+        status.setDiceRollable(true);
         this.highlightDice(true);
     }
     public void notifyTargetChange(){

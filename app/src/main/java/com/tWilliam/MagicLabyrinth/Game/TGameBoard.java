@@ -454,7 +454,7 @@ public class TGameBoard extends RelativeLayout {
         this.highlightNearPlayer(player, true);
 
         if ( this.statusBoard != null )
-            this.statusBoard.notifyTurnEnd();
+            this.statusBoard.notifyTurnEnd(player);
     }
 
     public void moveFailPlayer(TPlayer movingPlayer, int targetX, int targetY){

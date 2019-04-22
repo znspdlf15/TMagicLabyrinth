@@ -29,11 +29,12 @@ public class MainActivity extends StandardActivity implements View.OnClickListen
         Intent intent;
         switch ( view.getId() ){
             case R.id.bt_normal_game:
-                intent = new Intent(this, GameActivity.class);
-                startActivity(intent);
+                Toast.makeText(this, "아직 준비중입니다.", Toast.LENGTH_SHORT).show();
+
                 break;
             case R.id.bt_multi_game:
-
+                intent = new Intent(this, GameActivity.class);
+                startActivity(intent);
                 break;
             case R.id.bt_online_game:
                 Toast.makeText(this, "아직 준비중입니다.", Toast.LENGTH_SHORT).show();

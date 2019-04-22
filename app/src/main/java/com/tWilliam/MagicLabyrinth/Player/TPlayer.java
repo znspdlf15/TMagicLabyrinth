@@ -3,7 +3,7 @@ package com.tWilliam.MagicLabyrinth.Player;
 import com.tWilliam.MagicLabyrinth.Game.TLocation;
 import com.tWilliam.MagicLabyrinth.R;
 
-public class TPlayer {
+public abstract class TPlayer {
     private int imageId;
     private TLocation location;
     private int x;
@@ -35,6 +35,7 @@ public class TPlayer {
     public void setLocation(TLocation location) {
         this.location = location;
     }
+    
     public int getX() {
         return x;
     }
@@ -44,8 +45,6 @@ public class TPlayer {
             this.org_x = x;
         }
     }
-
-
     public int getY() {
         return y;
     }
@@ -65,4 +64,6 @@ public class TPlayer {
     public int getOrgY() { return org_y; }
     public int getMoveCount() { return move_count; }
     public void setMoveCount(int move_count) { this.move_count = move_count; }
+
+    public abstract boolean isLocalPlayer();
 }

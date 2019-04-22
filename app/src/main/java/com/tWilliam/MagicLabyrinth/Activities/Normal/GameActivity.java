@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import com.tWilliam.MagicLabyrinth.Activities.PopUp.RecheckExitActivity;
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
 import com.tWilliam.MagicLabyrinth.Game.TStatusBoard;
+import com.tWilliam.MagicLabyrinth.Player.THumanPlayer;
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
 import com.tWilliam.MagicLabyrinth.R;
 import com.tWilliam.MagicLabyrinth.TLibrary.TActivityConstant;
@@ -61,12 +62,12 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
         c.applyTo(statusboardLayout);
 
         mStatusBoard.setAllOnClickListener(this);
+        mGameBoard.setStatusBoard(mStatusBoard);
+        TPlayer[] players = {new THumanPlayer(R.mipmap.soccer_player), new THumanPlayer(R.mipmap.magician)};
 
-        TPlayer[] players = {new TPlayer(R.mipmap.soccer_player), new TPlayer(R.mipmap.magician)};
         mGameBoard.enrollPlayers(players);
         mStatusBoard.enrollPlayers(players);
 
-        mGameBoard.setStatusBoard(mStatusBoard);
     }
 
     @Override
