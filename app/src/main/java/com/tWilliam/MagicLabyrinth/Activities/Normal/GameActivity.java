@@ -17,16 +17,16 @@ import com.tWilliam.MagicLabyrinth.TLibrary.TActivityConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TIntentCode;
 import com.tWilliam.MagicLabyrinth.Activities.PopUp.WinPopUpActivity;
 
-public class GameActivity extends StandardActivity implements View.OnClickListener {
+abstract class GameActivity extends StandardActivity implements View.OnClickListener {
 
-    private RelativeLayout backgroundLayout;
-    private TGameBoard mGameBoard;
+    protected RelativeLayout backgroundLayout;
+    protected TGameBoard mGameBoard;
 
-    private ConstraintLayout statusboardLayout;
-    private TStatusBoard mStatusBoard;
-    private final int statusBoardId = 100001;
-    private int goalScore = 5;
-    private int wallNumber = 25;
+    protected ConstraintLayout statusboardLayout;
+    protected TStatusBoard mStatusBoard;
+    protected final int statusBoardId = 100001;
+    protected int goalScore = 5;
+    protected int wallNumber = 25;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +63,6 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
 
         mStatusBoard.setAllOnClickListener(this);
         mGameBoard.setStatusBoard(mStatusBoard);
-        TPlayer[] players = {new THumanPlayer(R.mipmap.soccer_player), new THumanPlayer(R.mipmap.magician)};
-
-        mGameBoard.enrollPlayers(players);
-        mStatusBoard.enrollPlayers(players);
-
     }
 
     @Override
@@ -77,12 +72,9 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
         type = mGameBoard.reactOnClick(v);
         mStatusBoard.reactOnClick(v);
 
-        if ( TActivityConstant.ActivityReactType.DESTROY == type ){
+        if ( type == TActivityConstant.ActivityReactType.DESTROY  ){
             if ( mGameBoard.getWinner() != null ){
-                int imageId = mGameBoard.getWinner().getImageId();
-                Intent intent = new Intent(this, WinPopUpActivity.class);
-                intent.putExtra("imageId", imageId);
-                startActivityForResult(intent, TIntentCode.WINNER_ACTIVITY_CODE);
+                gameEnd();
             }
         }
     }
@@ -109,5 +101,12 @@ public class GameActivity extends StandardActivity implements View.OnClickListen
     public void onBackPressed(){
         Intent intent = new Intent(this, RecheckExitActivity.class);
         startActivityForResult(intent, TIntentCode.RECHECK_EXIT_ACTIVITY_CODE);
+    }
+
+    public void gameEnd(){
+        int imageId = mGameBoard.getWinner().getImageId();
+        Intent intent = new Intent(this, WinPopUpActivity.class);
+        intent.putExtra("imageId", imageId);
+        startActivityForResult(intent, TIntentCode.WINNER_ACTIVITY_CODE);
     }
 }

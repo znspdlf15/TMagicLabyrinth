@@ -2,6 +2,7 @@ package com.tWilliam.MagicLabyrinth.Player;
 
 import com.tWilliam.MagicLabyrinth.Game.TLocation;
 import com.tWilliam.MagicLabyrinth.R;
+import com.tWilliam.MagicLabyrinth.TLibrary.TDirection;
 
 public abstract class TPlayer {
     private int imageId;
@@ -57,8 +58,8 @@ public abstract class TPlayer {
     public int getScore(){
         return this.score;
     }
-    public void addScore(){
-        this.score++;
+    public void addScore(int s){
+        this.score += s;
     }
     public int getOrgX() { return org_x; }
     public int getOrgY() { return org_y; }

@@ -18,6 +18,9 @@ import java.util.Random;
 
 public class TGameBoard extends RelativeLayout {
     private TLocation[][] locationMap;
+
+
+
     private TWall[][] verticalWalls;
     private TWall[][] horizontalWalls;
     private TStatusBoard statusBoard;
@@ -28,7 +31,7 @@ public class TGameBoard extends RelativeLayout {
     private int wallHeight = 62;
 
     private final int goalScore;
-    private TPlayer winner;
+    private TPlayer winner = null;
 
     private ArrayList<TPlayer> playerLocations = new ArrayList<>();
     private TPlayer[] players;
@@ -41,6 +44,11 @@ public class TGameBoard extends RelativeLayout {
         WAIT,
         GOING
     }
+
+    public TLocation[][] getLocationMap(){
+        return locationMap;
+    }
+
     private Status status = Status.WAIT;
 
     public TGameBoard(Context context, int wallNumber, int goalScore){
@@ -358,69 +366,84 @@ public class TGameBoard extends RelativeLayout {
         }
     }
 
+    public TPlayer getPlayer(int idx){
+        return players[idx];
+    }
+
+    public TPlayer getNowPlayer(){
+        return getPlayer(turnIdx);
+    }
+
     public TActivityConstant.ActivityReactType reactOnClick(View v){
         // if status is wait, no react
         if ( status == Status.WAIT )
             return TActivityConstant.ActivityReactType.NONE;
 
-        int clickedX = -1;
-        int clickedY = -1;
+        if ( v instanceof TLocation ){
+            if ( !getNowPlayer().isLocalPlayer() )
+                return TActivityConstant.ActivityReactType.NONE;
 
-        // if click object is near players.
-        for ( int y = 0; y < locationMap.length; y++ ){
-            for ( int x = 0; x < locationMap[0].length; x++ ){
-                if ( locationMap[y][x] == v ){
-                    clickedX = x;
-                    clickedY = y;
+            int clickedX = -1;
+            int clickedY = -1;
+
+            for ( int y = 0; y < locationMap.length; y++ ){
+                for ( int x = 0; x < locationMap[0].length; x++ ){
+                    if ( locationMap[y][x] == v ){
+                        clickedX = x;
+                        clickedY = y;
+                    }
                 }
             }
-        }
 
-        // if click object is player.
-        for ( TPlayer player: playerLocations ){
-            if ( v == player.getLocation() ) {
-                clickedX = player.getX();
-                clickedY = player.getY();
+            // if click object is player.
+            for ( TPlayer player: playerLocations ){
+                if ( v == player.getLocation() ) {
+                    clickedX = player.getX();
+                    clickedY = player.getY();
+                }
             }
-        }
 
-        int playerX = players[turnIdx].getX();
-        int playerY = players[turnIdx].getY();
+            int playerX = getPlayer(turnIdx).getX();
+            int playerY = getPlayer(turnIdx).getY();
 
-        for ( TDirection.Dir4 dir : TDirection.Dir4.values() ){
-            int targetX = playerX + dir.DeltaX();
-            int targetY = playerY + dir.DeltaY();
+            // if click object is near players.
+            for ( TDirection.Dir4 dir : TDirection.Dir4.values() ){
+                int targetX = playerX + dir.DeltaX();
+                int targetY = playerY + dir.DeltaY();
 
-            if ( !(targetX == clickedX && targetY == clickedY) )
-                continue;
+                if ( !(targetX == clickedX && targetY == clickedY) )
+                    continue;
 
-            if ( canPlayerGo(playerX, playerY, dir) ){
-                movePlayer(players[turnIdx], targetX, targetY);
-                this.unhighlightLocations();
+                if ( canPlayerGo(playerX, playerY, dir) ){
+                    movePlayer( getPlayer(turnIdx), targetX, targetY);
+                    this.unhighlightLocations();
 
-                if ( players[turnIdx].getScore() >= goalScore ){
-                    winner = players[turnIdx];
-                    return TActivityConstant.ActivityReactType.DESTROY;
-                }
+                    if ( locationMap[targetY][targetX].isTarget() ){
+                        getPlayer(turnIdx).addScore(1);
+                        locationMap[targetY][targetX].setImageAlpha(50);
+                        setNextTarget();
+                    }
 
-                if ( locationMap[targetY][targetX].isTarget() ){
-                    players[turnIdx].addScore();
-                    locationMap[targetY][targetX].setImageAlpha(50);
-                    setNextTarget();
-                }
+                    if ( getPlayer(turnIdx).getScore() >= goalScore ){
+                        winner = players[turnIdx];
+                        return TActivityConstant.ActivityReactType.DESTROY;
+                    }
 
-                if ( players[turnIdx].getMoveCount() == 0 )
-                    nextTurn();
+                    if ( getPlayer(turnIdx).getMoveCount() == 0 )
+                        nextTurn();
 
-                this.highlightNearPlayer(players[turnIdx], true);
-            } else {
-                this.moveFailPlayer(players[turnIdx], targetX, targetY);
-                if ( dir == TDirection.Dir4.DOWN || dir == TDirection.Dir4.UP ){
-                    this.horizontalWalls[(playerY + targetY)/2][(playerX + targetX)/2].blink();
+                    this.highlightNearPlayer(getPlayer(turnIdx), true);
                 } else {
-                    this.verticalWalls[(playerY + targetY)/2][(playerX + targetX)/2].blink();
+                    this.moveFailPlayer( getPlayer(turnIdx), targetX, targetY);
+                    if ( dir == TDirection.Dir4.DOWN || dir == TDirection.Dir4.UP ){
+                        this.horizontalWalls[(playerY + targetY)/2][(playerX + targetX)/2].blink();
+                    } else {
+                        this.verticalWalls[(playerY + targetY)/2][(playerX + targetX)/2].blink();
+                    }
                 }
             }
+
+            return TActivityConstant.ActivityReactType.NONE;
         }
 
         return TActivityConstant.ActivityReactType.NONE;
@@ -446,6 +469,7 @@ public class TGameBoard extends RelativeLayout {
         this.players[turnIdx].setMoveCount(0);
         this.turnIdx = (this.turnIdx + 1) % players.length;
 
+        this.unhighlightLocations();
         this.setPlayerTurn(players[turnIdx]);
     }
 
@@ -466,7 +490,6 @@ public class TGameBoard extends RelativeLayout {
         movingPlayer.getLocation().setX(locationMap[orgY][orgX].getX());
         movingPlayer.getLocation().setY(locationMap[orgY][orgX].getY());
 
-        this.unhighlightLocations();
         this.nextTurn();
     }
 
@@ -512,6 +535,16 @@ public class TGameBoard extends RelativeLayout {
 
     public TPlayer getWinner(){
         return winner;
+    }
+
+    public void setWinner(TPlayer player) { this.winner = player; }
+
+    public TWall[][] getVerticalWalls() {
+        return verticalWalls;
+    }
+
+    public TWall[][] getHorizontalWalls() {
+        return horizontalWalls;
     }
 }
  

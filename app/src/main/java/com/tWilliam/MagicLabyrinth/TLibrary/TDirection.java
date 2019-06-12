@@ -21,6 +21,22 @@ public class TDirection {
         public int DeltaY(){
             return dy[this.idx];
         }
+        public Dir4 getReverseDir() {
+            Dir4 reverse = null;
+            switch ( this ){
+                case UP:
+                    reverse = DOWN; break;
+                case DOWN:
+                    reverse = UP; break;
+                case LEFT:
+                    reverse = RIGHT; break;
+                case RIGHT:
+                    reverse = LEFT; break;
+                default:
+                    break;
+            }
+            return reverse;
+        }
     }
     public enum Dir8 {
         DOWN(0),

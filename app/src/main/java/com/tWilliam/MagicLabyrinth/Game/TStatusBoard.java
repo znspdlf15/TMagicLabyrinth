@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tWilliam.MagicLabyrinth.Activities.Normal.SingleGameActivity;
 import com.tWilliam.MagicLabyrinth.Player.TPlayer;
 import com.tWilliam.MagicLabyrinth.R;
 
@@ -78,6 +79,19 @@ public class TStatusBoard extends ConstraintLayout {
             this.getChildAt(i).setOnClickListener(listener);
         }
     }
+
+    public void aiRollDice(final SingleGameActivity.AiPlayerCallBack callBack){
+        status.setDiceRollable(false);
+        mDice.roll(new TDice.DiceCallBack() {
+            @Override
+            public void diceRollEnd(int rollCount) {
+                notifyRollEnd(rollCount);
+                callBack.diceRollEnd();
+            }
+        });
+
+    }
+
     public void reactOnClick(View v){
         if ( v == mDice ){
             if ( !status.isDiceRollable() )
@@ -99,8 +113,8 @@ public class TStatusBoard extends ConstraintLayout {
             this.mDice.setBackgroundResource(0);
     }
     public void notifyTurnEnd(TPlayer player){
-        if ( !player.isLocalPlayer() )
-            return;
+//        if ( !player.isLocalPlayer() )
+//            return;
 
         status.setDiceRollable(true);
         this.highlightDice(true);
