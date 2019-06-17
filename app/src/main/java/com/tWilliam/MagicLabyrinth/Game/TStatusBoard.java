@@ -80,7 +80,11 @@ public class TStatusBoard extends ConstraintLayout {
         }
     }
 
-    public void aiRollDice(final SingleGameActivity.AiPlayerCallBack callBack){
+    public void aiRollDice(final SingleGameActivity.AiPlayerCallBack callBack, boolean force){
+        if ( !force && !status.isDiceRollable() ){
+            return;
+        }
+
         status.setDiceRollable(false);
         mDice.roll(new TDice.DiceCallBack() {
             @Override

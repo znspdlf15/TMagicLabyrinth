@@ -10,8 +10,6 @@ import android.widget.RelativeLayout;
 import com.tWilliam.MagicLabyrinth.Activities.PopUp.RecheckExitActivity;
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
 import com.tWilliam.MagicLabyrinth.Game.TStatusBoard;
-import com.tWilliam.MagicLabyrinth.Player.THumanPlayer;
-import com.tWilliam.MagicLabyrinth.Player.TPlayer;
 import com.tWilliam.MagicLabyrinth.R;
 import com.tWilliam.MagicLabyrinth.TLibrary.TActivityConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TIntentCode;

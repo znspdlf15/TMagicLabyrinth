@@ -28,15 +28,15 @@ public class SingleGameActivity extends GameActivity {
 
         mGameBoard.enrollPlayers(players);
         mStatusBoard.enrollPlayers(players);
-
         Handler handler = new Handler();
 
         final TPlayer nowPlayer = mGameBoard.getNowPlayer();
 
         if ( nowPlayer instanceof TAiPlayer ){
+            TStatusBoard.status.setDiceRollable(false);
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    AiTurn((TAiPlayer)nowPlayer);
+                    AiTurn((TAiPlayer)nowPlayer, true);
                 }
             }, 2000);
         }
@@ -50,9 +50,9 @@ public class SingleGameActivity extends GameActivity {
 
         if ( now_player.isLocalPlayer() ) {
             return;
+        } else {
+            this.AiTurn((TAiPlayer)now_player, false);
         }
-
-        this.AiTurn((TAiPlayer)now_player);
     }
 
 
@@ -110,12 +110,12 @@ public class SingleGameActivity extends GameActivity {
         public void diceRollEnd();
     }
 
-    public void AiTurn(final TAiPlayer nowPlayer){
+    public void AiTurn(final TAiPlayer nowPlayer, boolean force){
         mStatusBoard.aiRollDice(new AiPlayerCallBack(){
             @Override
             public void diceRollEnd(){
                 rollEnd(nowPlayer);
             }
-        });
+        }, force);
     }
 }
