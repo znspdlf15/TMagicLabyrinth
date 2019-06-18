@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.tWilliam.MagicLabyrinth.Activities.PopUp.AiLevelSelectActivity;
 import com.tWilliam.MagicLabyrinth.Activities.PopUp.RecheckExitActivity;
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
 import com.tWilliam.MagicLabyrinth.Game.TStatusBoard;
@@ -31,10 +32,22 @@ abstract class GameActivity extends StandardActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        this.init();
+        this.popSelectActivity();
+    }
+
+    public void popSelectActivity(){
+//        Intent intent = new Intent(this, AiLevelSelectActivity.class);
+//        startActivityForResult(intent, TIntentCode.AI_LEVEL_SELECT_ACTIVITY_CODE);
+//        this.wallNumber = intent.getIntExtra("wall_count", 0);
+//        this.goalScore = intent.getIntExtra("goal_count", 5);
+    }
+
+    public void init(){
         backgroundLayout = findViewById(R.id.game_board);
 
         // game board
-        mGameBoard = new TGameBoard(backgroundLayout.getContext(), this.wallNumber, this.goalScore);
+        mGameBoard = new TGameBoard(backgroundLayout.getContext());
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
@@ -61,6 +74,10 @@ abstract class GameActivity extends StandardActivity implements View.OnClickList
 
         mStatusBoard.setAllOnClickListener(this);
         mGameBoard.setStatusBoard(mStatusBoard);
+    }
+
+    public void activityStart(){
+
     }
 
     @Override
@@ -91,7 +108,6 @@ abstract class GameActivity extends StandardActivity implements View.OnClickList
                 }
                 break;
             default:
-                break;
         }
     }
 

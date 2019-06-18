@@ -59,4 +59,7 @@ public class TConstant {
     static final public int MIDEUM_WALL_COUNT = 22;
     static final public int HARD_WALL_COUNT = 25;
 
+    static final public int MIN_WALL_COUNT = 10;
+    static final public int MAX_WALL_COUNT = 25;
+
 }

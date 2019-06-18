@@ -4,4 +4,9 @@
     <string name="bt_normal_game">혼자하기</string>
     <string name="bt_multi_game">둘이서하기</string>
     <string name="bt_online_game">온라인게임</string>
+
+    <string name="ai_1_instruction">컴퓨터가 알아낸 벽을 잊어버리지 않습니다.</string>
+    <string name="ai_2_instruction">컴퓨터가 가끔 턴이 시작할 때 알고 있던 벽 몇 개를 잊어버립니다.</string>
+    <string name="ai_3_instruction">컴퓨터가 자주 턴이 시작할 때 알고 있던 벽 몇 개를 잊어버립니다.</string>
+
 </resources>

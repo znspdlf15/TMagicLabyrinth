@@ -30,7 +30,8 @@ public class TGameBoard extends RelativeLayout {
     private int wallWidth = 3;
     private int wallHeight = 62;
 
-    private final int goalScore;
+    private int goalScore = 1;
+    private int wallCount = 0;
     private TPlayer winner = null;
 
     private ArrayList<TPlayer> playerLocations = new ArrayList<>();
@@ -51,18 +52,18 @@ public class TGameBoard extends RelativeLayout {
 
     private Status status = Status.WAIT;
 
-    public TGameBoard(Context context, int wallNumber, int goalScore){
+    public TGameBoard(Context context){
         super(context);
 
         int dp_10 = (int)TDPCalculator.DPToPixel(10, this.getContext());
         this.setPadding(dp_10, dp_10, dp_10, dp_10);
 
+        int imageIdx = 0;
+
         locationMap = new TLocation[6][6];
         verticalWalls = new TWall[6][5];
         horizontalWalls = new TWall[5][6];
 
-        this.goalScore = goalScore;
-        int imageIdx = 0;
         for ( int y = 0; y < locationMap.length; y++ ){
             for ( int x = 0; x < locationMap[0].length; x++ ){
                 // location
@@ -136,10 +137,19 @@ public class TGameBoard extends RelativeLayout {
                 }
             }
         }
+    }
 
+    public void setGoalScore(int goal_score){
+        this.goalScore = goal_score;
+    }
+
+    public void setWallCount(int wall_count){
+        this.wallCount = wall_count;
+    }
+    public void init(){
         initTargetList();
         highlightNextTarget(true);
-        initWalls(wallNumber);
+        initWalls(this.wallCount);
     }
 
     public void enrollPlayers(TPlayer[] players){

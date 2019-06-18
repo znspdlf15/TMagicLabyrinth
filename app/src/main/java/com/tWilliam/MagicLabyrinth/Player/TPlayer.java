@@ -65,6 +65,7 @@ public abstract class TPlayer {
     public int getOrgY() { return org_y; }
     public int getMoveCount() { return move_count; }
     public void setMoveCount(int move_count) { this.move_count = move_count; }
+    public void turnInit(){}
 
     public abstract boolean isLocalPlayer();
 }

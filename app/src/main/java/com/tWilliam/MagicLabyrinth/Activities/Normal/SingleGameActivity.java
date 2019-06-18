@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import com.tWilliam.MagicLabyrinth.Activities.PopUp.AiLevelSelectActivity;
 import com.tWilliam.MagicLabyrinth.Activities.PopUp.WinPopUpActivity;
 import com.tWilliam.MagicLabyrinth.Game.TStatusBoard;
 import com.tWilliam.MagicLabyrinth.Player.TAiPlayer;
@@ -17,22 +18,35 @@ import com.tWilliam.MagicLabyrinth.TLibrary.TDirection;
 import com.tWilliam.MagicLabyrinth.TLibrary.TIntentCode;
 
 public class SingleGameActivity extends GameActivity {
-
+    private TAiPlayer aiPlayer;
+    private int aiLevel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
-        TAiPlayer aiPlayer = new TAiPlayer(R.mipmap.magician);
-        aiPlayer.setAiLevel(1);
+    @Override
+    public void popSelectActivity(){
+        Intent intent = new Intent(this, AiLevelSelectActivity.class);
+        startActivityForResult(intent, TIntentCode.AI_LEVEL_SELECT_ACTIVITY_CODE);
+        this.wallNumber = intent.getIntExtra("wall_count", 0);
+        this.goalScore = intent.getIntExtra("goal_count", 5);
+        this.aiLevel = intent.getIntExtra("ai_level", 1);
+
+        aiPlayer = new TAiPlayer(R.mipmap.magician);
+        aiPlayer.setAiLevel(this.aiLevel);
         TPlayer[] players = {new THumanPlayer(R.mipmap.soccer_player), aiPlayer};
 
         mGameBoard.enrollPlayers(players);
         mStatusBoard.enrollPlayers(players);
+    }
+
+    @Override
+    public void activityStart(){
         Handler handler = new Handler();
 
         final TPlayer nowPlayer = mGameBoard.getNowPlayer();
-
-        if ( nowPlayer instanceof TAiPlayer ){
+        if ( nowPlayer == aiPlayer ){
             TStatusBoard.status.setDiceRollable(false);
             handler.postDelayed(new Runnable() {
                 public void run() {
@@ -111,11 +125,27 @@ public class SingleGameActivity extends GameActivity {
     }
 
     public void AiTurn(final TAiPlayer nowPlayer, boolean force){
+        nowPlayer.turnInit();
         mStatusBoard.aiRollDice(new AiPlayerCallBack(){
             @Override
             public void diceRollEnd(){
                 rollEnd(nowPlayer);
             }
         }, force);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch ( requestCode ){
+            case TIntentCode.AI_LEVEL_SELECT_ACTIVITY_CODE:
+                if ( resultCode == RESULT_OK ){
+                    activityStart();
+                } else if ( resultCode == RESULT_CANCELED ){
+                    finish();
+                }
+                break;
+            default:
+        }
     }
 }

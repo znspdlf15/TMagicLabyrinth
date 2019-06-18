@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 
 import android.util.Pair;
 
@@ -54,9 +55,40 @@ public class TAiPlayer extends TPlayer {
         knownHorizontalWall[y][x] = wallType.Occupy;
     }
 
-    public void forgetVerticalWall(int x, int y){}
+    public void forgetVerticalWall(){
+        ArrayList<Pair <Integer, Integer>> q = new ArrayList<>();
 
-    public void forgetHorizontalWall(int x, int y){}
+        for ( int y = 0; y < knownVerticalWall.length; y++ ){
+            for ( int x = 0; x < knownVerticalWall[0].length; x++ ){
+                if ( knownVerticalWall[y][x] == wallType.Occupy ){
+                    q.add(Pair.create(x, y));
+                }
+            }
+        }
+
+        Random random = new Random();
+        int idx = random.nextInt(q.size());
+
+
+        knownVerticalWall[q.get(idx).second][q.get(idx).first] = wallType.Empty;
+    }
+
+    public void forgetHorizontalWall(){
+        ArrayList<Pair <Integer, Integer>> q = new ArrayList<>();
+
+        for ( int y = 0; y < knownHorizontalWall.length; y++ ){
+            for ( int x = 0; x < knownHorizontalWall[0].length; x++ ){
+                if ( knownHorizontalWall[y][x] == wallType.Occupy ){
+                    q.add(Pair.create(x, y));
+                }
+            }
+        }
+
+        Random random = new Random();
+        int idx = random.nextInt(q.size());
+
+        knownHorizontalWall[q.get(idx).second][q.get(idx).first] = wallType.Empty;
+    }
 
     public TDirection.Dir4 getNextDir(TLocation[][] locationMap){
         int targetX = -1;
@@ -123,6 +155,33 @@ public class TAiPlayer extends TPlayer {
         }
 
         return null;
+    }
+    public void turnInit(){
+        super.turnInit();
+
+        float prob = 0;
+        switch ( this.aiLevel ){
+            case 1:
+                prob = 0f;
+                break;
+            case 2:
+                prob = 0.05f;
+                break;
+            case 3:
+                prob = 0.15f;
+                break;
+            default:
+
+        }
+
+        Random random = new Random();
+        while ( random.nextFloat() <= prob ){
+            if ( random.nextInt(2) == 1 ){
+                forgetHorizontalWall();
+            } else {
+                forgetVerticalWall();
+            }
+        }
     }
 
     public boolean isGoing(){ return isGoing; }
