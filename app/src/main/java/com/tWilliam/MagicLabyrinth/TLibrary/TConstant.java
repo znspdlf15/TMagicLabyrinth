@@ -62,4 +62,8 @@ public class TConstant {
     static final public int MIN_WALL_COUNT = 10;
     static final public int MAX_WALL_COUNT = 25;
 
+    static final public int MIN_GOAL_COUNT = 1;
+    static final public int MAX_GOAL_COUNT = 10;
+    static final public int DEFAULT_GOAL_COUNT = 5;
+
 }

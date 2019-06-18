@@ -29,10 +29,11 @@ public class SingleGameActivity extends GameActivity {
     public void popSelectActivity(){
         Intent intent = new Intent(this, AiLevelSelectActivity.class);
         startActivityForResult(intent, TIntentCode.AI_LEVEL_SELECT_ACTIVITY_CODE);
-        this.wallNumber = intent.getIntExtra("wall_count", 0);
-        this.goalScore = intent.getIntExtra("goal_count", 5);
-        this.aiLevel = intent.getIntExtra("ai_level", 1);
 
+    }
+
+    @Override
+    public void enrollPlayers(){
         aiPlayer = new TAiPlayer(R.mipmap.magician);
         aiPlayer.setAiLevel(this.aiLevel);
         TPlayer[] players = {new THumanPlayer(R.mipmap.soccer_player), aiPlayer};
@@ -43,6 +44,7 @@ public class SingleGameActivity extends GameActivity {
 
     @Override
     public void activityStart(){
+        super.activityStart();
         Handler handler = new Handler();
 
         final TPlayer nowPlayer = mGameBoard.getNowPlayer();
@@ -68,7 +70,6 @@ public class SingleGameActivity extends GameActivity {
             this.AiTurn((TAiPlayer)now_player, false);
         }
     }
-
 
     public void rollEnd(final TAiPlayer nowPlayer){
         final Handler handler = new Handler();
@@ -140,6 +141,10 @@ public class SingleGameActivity extends GameActivity {
         switch ( requestCode ){
             case TIntentCode.AI_LEVEL_SELECT_ACTIVITY_CODE:
                 if ( resultCode == RESULT_OK ){
+                    this.wallNumber = data.getIntExtra("wall_count", 0);
+                    this.goalScore = data.getIntExtra("goal_count", 5);
+                    this.aiLevel = data.getIntExtra("ai_level", 1);
+
                     activityStart();
                 } else if ( resultCode == RESULT_CANCELED ){
                     finish();

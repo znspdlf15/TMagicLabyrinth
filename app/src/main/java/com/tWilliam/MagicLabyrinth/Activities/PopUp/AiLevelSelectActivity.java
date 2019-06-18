@@ -23,11 +23,11 @@ public class AiLevelSelectActivity extends Activity implements View.OnClickListe
     private Button easyButton;
 
     private int level;
-    private int goal_count;
 
     private TextView levelInstrcution;
 
-    private NumberPicker number_of_wall_picker;
+    private com.shawnlin.numberpicker.NumberPicker number_of_wall_picker;
+    private com.shawnlin.numberpicker.NumberPicker goal_score_picker;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +53,12 @@ public class AiLevelSelectActivity extends Activity implements View.OnClickListe
         number_of_wall_picker.setMaxValue(TConstant.MAX_WALL_COUNT);
         number_of_wall_picker.setValue(TConstant.MAX_WALL_COUNT);
 
+        goal_score_picker = findViewById(R.id.goal_score_picker);
+        goal_score_picker.setMaxValue(TConstant.MAX_GOAL_COUNT);
+        goal_score_picker.setMinValue(TConstant.MIN_GOAL_COUNT);
+        goal_score_picker.setValue(TConstant.DEFAULT_GOAL_COUNT);
+
+
         hardButton.setOnTouchListener(this);
         mediumButton.setOnTouchListener(this);
         easyButton.setOnTouchListener(this);
@@ -70,7 +76,7 @@ public class AiLevelSelectActivity extends Activity implements View.OnClickListe
                 intent.putExtra("result", TActivityConstant.ActivityReactType.NONE);
                 intent.putExtra("wall_count", number_of_wall_picker.getValue());
                 intent.putExtra("ai_level", level);
-                intent.putExtra("goal_count", goal_count);
+                intent.putExtra("goal_count", goal_score_picker.getValue());
                 setResult(RESULT_OK, intent);
 
                 finish();

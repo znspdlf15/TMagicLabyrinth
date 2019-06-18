@@ -146,7 +146,7 @@ public class TGameBoard extends RelativeLayout {
     public void setWallCount(int wall_count){
         this.wallCount = wall_count;
     }
-    public void init(){
+    public void setDependency(){
         initTargetList();
         highlightNextTarget(true);
         initWalls(this.wallCount);

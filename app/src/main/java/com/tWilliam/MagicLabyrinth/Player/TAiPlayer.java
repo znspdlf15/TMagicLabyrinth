@@ -21,7 +21,7 @@ public class TAiPlayer extends TPlayer {
     wallType[][] knownHorizontalWall;
 
     enum wallType{
-        Unknown, Empty, Occupy
+        Unknown, Occupy
     }
     public TAiPlayer(int imageId) {
         super(imageId);
@@ -70,7 +70,7 @@ public class TAiPlayer extends TPlayer {
         int idx = random.nextInt(q.size());
 
 
-        knownVerticalWall[q.get(idx).second][q.get(idx).first] = wallType.Empty;
+        knownVerticalWall[q.get(idx).second][q.get(idx).first] = wallType.Unknown;
     }
 
     public void forgetHorizontalWall(){
@@ -87,7 +87,7 @@ public class TAiPlayer extends TPlayer {
         Random random = new Random();
         int idx = random.nextInt(q.size());
 
-        knownHorizontalWall[q.get(idx).second][q.get(idx).first] = wallType.Empty;
+        knownHorizontalWall[q.get(idx).second][q.get(idx).first] = wallType.Unknown;
     }
 
     public TDirection.Dir4 getNextDir(TLocation[][] locationMap){
@@ -173,7 +173,6 @@ public class TAiPlayer extends TPlayer {
             default:
 
         }
-
         Random random = new Random();
         while ( random.nextFloat() <= prob ){
             if ( random.nextInt(2) == 1 ){

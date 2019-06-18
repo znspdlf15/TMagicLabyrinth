@@ -11,6 +11,9 @@ import com.tWilliam.MagicLabyrinth.Activities.PopUp.AiLevelSelectActivity;
 import com.tWilliam.MagicLabyrinth.Activities.PopUp.RecheckExitActivity;
 import com.tWilliam.MagicLabyrinth.Game.TGameBoard;
 import com.tWilliam.MagicLabyrinth.Game.TStatusBoard;
+import com.tWilliam.MagicLabyrinth.Player.TAiPlayer;
+import com.tWilliam.MagicLabyrinth.Player.THumanPlayer;
+import com.tWilliam.MagicLabyrinth.Player.TPlayer;
 import com.tWilliam.MagicLabyrinth.R;
 import com.tWilliam.MagicLabyrinth.TLibrary.TActivityConstant;
 import com.tWilliam.MagicLabyrinth.TLibrary.TIntentCode;
@@ -41,6 +44,10 @@ abstract class GameActivity extends StandardActivity implements View.OnClickList
 //        startActivityForResult(intent, TIntentCode.AI_LEVEL_SELECT_ACTIVITY_CODE);
 //        this.wallNumber = intent.getIntExtra("wall_count", 0);
 //        this.goalScore = intent.getIntExtra("goal_count", 5);
+    }
+
+    public void enrollPlayers(){
+
     }
 
     public void init(){
@@ -76,8 +83,15 @@ abstract class GameActivity extends StandardActivity implements View.OnClickList
         mGameBoard.setStatusBoard(mStatusBoard);
     }
 
-    public void activityStart(){
+    public void setDependency(){
+        this.enrollPlayers();
+        this.mGameBoard.setGoalScore(this.goalScore);
+        this.mGameBoard.setWallCount(this.wallNumber);
+        this.mGameBoard.setDependency();
+    }
 
+    public void activityStart(){
+        this.setDependency();
     }
 
     @Override
