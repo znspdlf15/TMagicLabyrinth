@@ -15,7 +15,6 @@ import android.util.Pair;
 
 public class TAiPlayer extends TPlayer {
     int aiLevel;
-    private boolean isGoing = false;
 
     wallType[][] knownVerticalWall;
     wallType[][] knownHorizontalWall;
@@ -66,6 +65,9 @@ public class TAiPlayer extends TPlayer {
             }
         }
 
+        if ( q.isEmpty() )
+            return;
+
         Random random = new Random();
         int idx = random.nextInt(q.size());
 
@@ -83,6 +85,9 @@ public class TAiPlayer extends TPlayer {
                 }
             }
         }
+
+        if ( q.isEmpty() )
+            return;
 
         Random random = new Random();
         int idx = random.nextInt(q.size());
@@ -165,10 +170,10 @@ public class TAiPlayer extends TPlayer {
                 prob = 0f;
                 break;
             case 2:
-                prob = 0.05f;
+                prob = 0.12f;
                 break;
             case 3:
-                prob = 0.15f;
+                prob = 0.25f;
                 break;
             default:
 
@@ -182,7 +187,4 @@ public class TAiPlayer extends TPlayer {
             }
         }
     }
-
-    public boolean isGoing(){ return isGoing; }
-    public void setGoing(boolean going) { isGoing = going; }
 }
