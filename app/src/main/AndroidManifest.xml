@@ -37,6 +37,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog"/>
 
+        <activity android:name=".Activities.PopUp.GameSettingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"/>
+
     </application>
 
 </manifest>
