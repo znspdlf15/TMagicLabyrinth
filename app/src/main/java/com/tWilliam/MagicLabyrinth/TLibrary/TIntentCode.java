@@ -5,6 +5,7 @@ public class TIntentCode {
     public static final int WINNER_ACTIVITY_CODE = 2;
     public static final int AI_LEVEL_SELECT_ACTIVITY_CODE = 3;
     public static final int DUAL_LEVEL_SELECT_ACTIVITY_CODE = 4;
+    public static final int ONLINE_SEARCH_ACTIVITY_CODE = 5;
 
     public static final int SELECT_ACTIVITY_CODE = 5;
 }
