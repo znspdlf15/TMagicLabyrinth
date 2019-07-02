@@ -24,7 +24,6 @@ public class OnlineGameActivity extends GameActivity {
     public void popSelectActivity(){
         Intent intent = new Intent(this, OnlineSearchActivity.class);
         startActivityForResult(intent, TIntentCode.ONLINE_SEARCH_ACTIVITY_CODE);
-
     }
 
     @Override

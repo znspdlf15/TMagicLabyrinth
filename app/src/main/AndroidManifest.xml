@@ -2,49 +2,58 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tWilliam.MagicLabyrinth">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/maze"
         android:label="@string/app_name_korean"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.Normal.MainActivity"
+        <service
+            android:name=".Services.SocketService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity
+            android:name=".Activities.Normal.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.Normal.DoubleGameActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.Normal.SingleGameActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activities.Normal.OnlineGameActivity"
-            android:screenOrientation="portrait"/>
-        
-        <activity android:name=".Activities.PopUp.WinPopUpActivity"
+        <activity
+            android:name=".Activities.Normal.DoubleGameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.Normal.SingleGameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.Normal.OnlineGameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.PopUp.WinPopUpActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"/>
-
-        <activity android:name=".Activities.PopUp.RecheckExitActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".Activities.PopUp.RecheckExitActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"/>
-
-        <activity android:name=".Activities.PopUp.AiLevelSelectActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".Activities.PopUp.AiLevelSelectActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"/>
-
-        <activity android:name=".Activities.PopUp.GameSettingActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".Activities.PopUp.GameSettingActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"/>
-
-        <activity android:name=".Activities.PopUp.OnlineSearchActivity"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".Activities.PopUp.OnlineSearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"/>
-
+            android:theme="@android:style/Theme.Dialog" />
     </application>
 
 </manifest>

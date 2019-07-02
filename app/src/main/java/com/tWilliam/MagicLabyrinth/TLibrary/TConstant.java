@@ -66,4 +66,14 @@ public class TConstant {
     static final public int MAX_GOAL_COUNT = 10;
     static final public int DEFAULT_GOAL_COUNT = 5;
 
+
+
+
+    /*
+    server
+     */
+
+    public final static String serverIP = "13.125.248.15";
+    public final static int serverPort = 10001;
+    public static final int THREAD_CNT = 10;
 }
